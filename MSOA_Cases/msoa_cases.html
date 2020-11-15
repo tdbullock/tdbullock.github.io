@@ -4,9 +4,29 @@
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
     <script src="https://unpkg.com/@deck.gl/carto@^8.3.0/dist.min.js"></script>
 
+    <!-- Mapbox dependencies -->
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css" rel="stylesheet" />
     <style type="text/css">
-      body {background: #111; margin: 0; padding: 0;}
+      body {
+      background: #111; 
+      margin: 0; 
+      padding: 0;
+      }
       #container {width: 100vw; height: 100vh;}
+      
+.deck-tooltip {
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  padding: 4px;
+  margin: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  max-width: 300px;
+  font-size: 13px;
+  z-index: 9;
+  pointer-events: none;
+}
     </style>
   </head>
 
@@ -21,7 +41,7 @@ const DATA_URL =
   'https://tdbullock.github.io/MSOA_Cases/DATA/msoa_casesJson.geojson'; // eslint-disable-line
 
 function colorScale(x) {
-  const i = Math.round(x * 0.1);
+  const i = Math.round(x * 0.012);
   if (x < 0) {
     return COLOR_SCALE[i] || COLOR_SCALE[0];
   }
@@ -90,7 +110,7 @@ function getTooltip({object}) {
       html: `\
   <div><b> ${object.properties.areaName}</b></div>
   <div>District: ${object.properties.msoa11nm}</div>
-  <div><b>${object.properties.newcases}</b> new cases</div>
+  <div><b>${object.properties.newcases}</b> new cases latest 7 days</div>
   <div>7-day case rate per 100k: <b>${object.properties.caserate}</b></div>
   `
     }
@@ -106,21 +126,23 @@ const lightingEffect = new deck.LightingEffect({ambientLight, pointLight1});
 
 const deckgl = new deck.DeckGL({
   container: 'container',
+  controller: true,
   initialViewState: INITIAL_VIEW_STATE,
 //  effects: lightingEffect,
   controller: true,
-//  mapStyle: deck.carto.BASEMAP.POSITRON,
-  mapStyle: MAP_STYLE,
+  
+  mapStyle: deck.carto.BASEMAP.DARK_MATTER,
+//  mapStyle: MAP_STYLE,
   getTooltip:getTooltip,
   layers: [
     // only needed when using shadows - a plane for shadows to drop on
-     new deck.PolygonLayer({
+  /*   new deck.PolygonLayer({
       id: 'ground',
       data: landCover,
       stroked: false,
       getPolygon: f => f,
       getFillColor: [0, 0, 0, 0]
-    }), 
+    }), */
     new deck.GeoJsonLayer({
       id: 'geojson',
       data: DATA_URL,
@@ -132,9 +154,9 @@ const deckgl = new deck.DeckGL({
  //     material,
       wireframe: false,
   //    elevationRange: [1, 5000],
-      elevationScale: 20,
-      getElevation: f => f.properties.caserate,
-      getFillColor: f => colorScale(f.properties.newcases),
+      elevationScale: 100,
+      getElevation: f => f.properties.newcases,
+      getFillColor: f => colorScale(f.properties.caserate),
       getLineColor: [255, 255, 255],
       pickable: true,
       transitions: {
