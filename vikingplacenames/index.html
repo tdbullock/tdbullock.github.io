@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <!-- deck.gl standalone bundle -->
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/carto@^8.3.0/dist.min.js"></script>
+
+    <!-- Mapbox dependencies -->
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css" rel="stylesheet" />
+    <style type="text/css">
+      body {
+      background: #111; 
+      margin: 0; 
+      padding: 0;
+      }
+      #container {width: 100vw; height: 100vh;}
+      
+.deck-tooltip {
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  padding: 4px;
+  margin: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  max-width: 300px;
+  font-size: 15px;
+  z-index: 9;
+  pointer-events: none;
+}
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+  </body>
+
+  <script type="text/javascript">
+
+// Source data GeoJSON
+const DATA_URL =
+  'vikingplacenames.geojson'; // eslint-disable-line
+
+  const INITIAL_VIEW_STATE = {
+  longitude: -1.415727,
+  latitude: 55.0,
+  zoom: 5,
+  minZoom: 5,
+  maxZoom: 15,
+  pitch: 0,
+  bearing: 0
+};
+
+
+
+
+
+
+
+function getTooltip({object}) {
+  return (
+    object && {
+      html: `\
+  <div><b> ${object.properties.place15nm}</b></div>
+  <div>${object.properties.ctyltnm}</div>
+  `
+    }
+  );
+}
+
+
+
+
+const deckgl = new deck.DeckGL({
+  container: 'container',
+  controller: true,
+  initialViewState: INITIAL_VIEW_STATE,
+//  effects: lightingEffect,
+  controller: true,
+  
+  mapStyle: deck.carto.BASEMAP.VOYAGER,
+//  mapStyle: MAP_STYLE,
+  getTooltip:getTooltip,
+  layers: [
+    // only needed when using shadows - a plane for shadows to drop on
+  /*   new deck.PolygonLayer({
+      id: 'ground',
+      data: landCover,
+      stroked: false,
+      getPolygon: f => f,
+      getFillColor: [0, 0, 0, 0]
+    }), */
+    new deck.GeoJsonLayer({
+      id: 'geojson',
+      data: DATA_URL,
+      filled: true,
+      pointRadiusMinPixels: 3,
+      pointRadiusMaxPixels: 6000,
+      pointRadiusScale: 1,
+      getRadius: 100,
+      getFillColor: [200, 0, 80, 180],
+      // Interactive props
+      pickable: true,
+      autoHighlight: true
+    })
+  ]
+});
+  </script>
+</html>
