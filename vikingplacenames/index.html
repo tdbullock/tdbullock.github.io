@@ -96,14 +96,25 @@ const deckgl = new deck.DeckGL({
     }),
     new deck.TextLayer({
       data: [
-        {position: [-15, 58], text: 'UK Viking Place Names'},
-        {position: [-15, 57.8], text: 'Tom Bullock'}
+        {position: [-15, 58], text: 'Place Names of Norse Origin'},
+      //  {position: [-15, 57.7], text: 'Tom Bullock'}
       ],
-      maxwidth:20,
-      fontSize: 30,
-
+      maxwidth:10,
+      getSize: 28,
     getTextAnchor: 'start',
     getAlignmentBaseline: 'center'
+
+
+      }),
+      new deck.TextLayer({
+      data: [
+      //  {position: [-15, 58], text: 'Place Names of Norse Origin'},
+        {position: [-15, 57.7], text: 'Tom Bullock'}
+      ],
+      maxwidth:10,
+      getSize: 25,
+      getTextAnchor: 'start',
+      getAlignmentBaseline: 'center'
 
 
       })
