@@ -81,14 +81,6 @@ const deckgl = new deck.DeckGL({
 //  mapStyle: MAP_STYLE,
   getTooltip:getTooltip,
   layers: [
-    // only needed when using shadows - a plane for shadows to drop on
-  /*   new deck.PolygonLayer({
-      id: 'ground',
-      data: landCover,
-      stroked: false,
-      getPolygon: f => f,
-      getFillColor: [0, 0, 0, 0]
-    }), */
     new deck.GeoJsonLayer({
       id: 'geojson',
       data: DATA_URL,
@@ -101,7 +93,20 @@ const deckgl = new deck.DeckGL({
       // Interactive props
       pickable: true,
       autoHighlight: true
-    })
+    }),
+    new deck.TextLayer({
+      data: [
+        {position: [-15, 58], text: 'UK Viking Place Names'},
+        {position: [-15, 57.8], text: 'Tom Bullock'}
+      ],
+      maxwidth:20,
+      fontSize: 30,
+
+    getTextAnchor: 'start',
+    getAlignmentBaseline: 'center'
+
+
+      })
   ]
 });
   </script>
