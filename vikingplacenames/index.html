@@ -1,5 +1,6 @@
 <html>
   <head>
+    <title>Place names of Norse Origin</title>
     <!-- deck.gl standalone bundle -->
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
     <script src="https://unpkg.com/@deck.gl/carto@^8.3.0/dist.min.js"></script>
@@ -27,11 +28,49 @@
   z-index: 9;
   pointer-events: none;
 }
+
+.legend{
+
+position: absolute;
+right: 10px;
+top: 10px;
+background-color: rgba(255,255,255,.65);
+color: #000;
+padding: 7px;
+width: 200px;
+font-family: Graphik,sans-serif;
+font-size: .7rem;
+border: 1px solid #16595a;
+border-radius: 5px;
+
+}
+
+.legend-break {
+line-height: 1.1;
+margin-bottom: 1px;
+display: flex;
+align-items: center;
+} 
     </style>
   </head>
 
   <body>
     <div id="container"></div>
+    <div class="legend">
+     <h3>Place name suffixes</h3>
+      <div class="legend-break">--by: farmstead or village</div>
+      <div class="legend-break">--thorpe: secondary settlement</div>
+      <div class="legend-break">--thwaite: woodland clearing</div>
+      <div class="legend-break">--toft: site of a building</div>
+      <div class="legend-break">--keld: spring</div>
+      <div class="legend-break">--ness: headland</div>
+      <div class="legend-break">--kirk: church</div>
+      <div class="legend-break">--holme: land reclaimed from marshes</div>
+      <div class="legend-break">--beck: stream</div>
+    </br>
+      <div class="legend-break">Town location data from geoportal.statistics.gov.uk
+      </div>
+    </div>
   </body>
 
   <script type="text/javascript">
@@ -49,11 +88,6 @@ const DATA_URL =
   pitch: 0,
   bearing: 0
 };
-
-
-
-
-
 
 
 function getTooltip({object}) {
@@ -97,7 +131,6 @@ const deckgl = new deck.DeckGL({
     new deck.TextLayer({
       data: [
         {position: [-15, 58], text: 'Place Names of Norse Origin'},
-      //  {position: [-15, 57.7], text: 'Tom Bullock'}
       ],
       maxwidth:10,
       getSize: 28,
@@ -108,7 +141,6 @@ const deckgl = new deck.DeckGL({
       }),
       new deck.TextLayer({
       data: [
-      //  {position: [-15, 58], text: 'Place Names of Norse Origin'},
         {position: [-15, 57.7], text: 'Tom Bullock'}
       ],
       maxwidth:10,

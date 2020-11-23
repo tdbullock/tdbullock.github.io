@@ -15,6 +15,27 @@
       }
       #container {width: 100vw; height: 100vh;}
       
+.legend{
+
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,.65);
+	color: #fff;
+	padding: 7px;
+	width: 200px;
+	font-family: Graphik,sans-serif;
+	font-size: .625rem;
+
+}
+
+.legend-break {
+	line-height: 1.1;
+	margin-bottom: 1px;
+	display: flex;
+	align-items: center;
+}
+
 .deck-tooltip {
   font-family: Helvetica, Arial, sans-serif;
   position: absolute;
@@ -32,6 +53,12 @@
 
   <body>
     <div id="container"></div>
+    <div class="legend">
+     
+      <div class="legend-break">&bull; Case Data from coronavirus.data.gov</div>
+        <div class="legend-break">&bull; Map data from geoportal.statistics.gov.uk
+      </div>
+    </div>
   </body>
 
   <script type="text/javascript">
