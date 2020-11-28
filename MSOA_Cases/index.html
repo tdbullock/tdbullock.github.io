@@ -18,14 +18,28 @@
 .legend{
 
 	position: absolute;
-	left: 0;
-	bottom: 0;
+	right: 0;
+	top: 0;
 	background-color: rgba(0,0,0,.65);
 	color: #fff;
 	padding: 7px;
-	width: 200px;
+	width: 50px;
 	font-family: Graphik,sans-serif;
 	font-size: .625rem;
+
+}
+
+.info{
+
+position: absolute;
+left: 0;
+bottom: 0;
+background-color: rgba(0,0,0,.65);
+color: #fff;
+padding: 7px;
+width: 200px;
+font-family: Graphik,sans-serif;
+font-size: .625rem;
 
 }
 
@@ -55,20 +69,75 @@
     <div id="container"></div>
     <div class="legend">
      
-      <div class="legend-break">&bull; Case Data from coronavirus.data.gov</div>
-        <div class="legend-break">&bull; Map data from geoportal.statistics.gov.uk
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(65, 182, 196);"></span>
+        <span>0-99</span>
       </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(199, 233, 180);"></span>
+        <span>100-199</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(255, 255, 204);"></span>
+        <span>200-299</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(255, 237, 160);"></span>
+        <span>300-399</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254, 217, 118);"></span>
+        <span>400-499</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254, 178, 76);"></span>
+        <span>500-599</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(253, 141, 60);"></span>
+        <span>600-699</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(227, 26, 28);"></span>
+        <span>700-799</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(189, 0, 38);"></span>
+        <span>800-899</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(128, 0, 38);"></span>
+        <span>900+</span>
+      </div>
+    </div>
+    <div class="info">
+      <div class="legend-break">Updated:&nbsp;<span id="update"></span></div>
+      <div class="legend-break">7 days rolling rate ending:&nbsp;<span id="latest"></span></div>
+        <div class="legend-break">Case data: coronavirus.data.gov.uk</div>
+        <div class="legend-break">Map data: geoportal.statistics.gov.uk</div>
+      
     </div>
   </body>
 
   <script type="text/javascript">
 
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var myObj = JSON.parse(this.responseText);
+    document.getElementById("update").innerHTML = myObj.updates[0].updated;
+    document.getElementById("latest").innerHTML = myObj.updates[0].latestdate;
+  }
+};
+xmlhttp.open("GET", "updates.json", true);
+xmlhttp.send();
+
 // Source data GeoJSON
 const DATA_URL =
-  'https://tdbullock.github.io/MSOA_Cases/DATA/msoa_casesJson.geojson'; // eslint-disable-line
+  'msoa_casesJson.geojson'; // eslint-disable-line
 
 function colorScale(x) {
-  const i = Math.round(x * 0.012);
+  const i = Math.floor(x * 0.01);
   if (x < 0) {
     return COLOR_SCALE[i] || COLOR_SCALE[0];
   }
@@ -76,26 +145,27 @@ function colorScale(x) {
 }
 
 const COLOR_SCALE = [
-    [65, 182, 196],
-    [127, 205, 187],
-    [199, 233, 180],
-    [237, 248, 177],
+    [65, 182, 196], // blue turquoise //10
+ //   [127, 205, 187], // bluegreen
+    [199, 233, 180], //light green
+ //   [237, 248, 177], // pale green
     // nine
-    [255, 255, 204],
-    [255, 237, 160],
-    [254, 217, 118],
-    [254, 178, 76],
-    [253, 141, 60],
-    [252, 78, 42],
-    [227, 26, 28],
-    [189, 0, 38],
-    [128, 0, 38]
+    [255, 255, 204], // very light yellow
+    [255, 237, 160], // lighter yellow
+    [254, 217, 118], // yellow
+    [254, 178, 76], //tan
+    [253, 141, 60], //orange
+//    [252, 78, 42], // orangy red
+    [227, 26, 28], // lighter red
+    [189, 0, 38], // 900 // red
+    [128, 0, 38] // 1000 // dark red
   ];
+
 
   const INITIAL_VIEW_STATE = {
   longitude: -1.415727,
-  latitude: 52.232395,
-  zoom: 6.6,
+  latitude: 52.332395,
+  zoom: 6.4,
   minZoom: 5,
   maxZoom: 15,
   pitch: 40.5,
@@ -136,7 +206,7 @@ function getTooltip({object}) {
     object && {
       html: `\
   <div><b> ${object.properties.areaName}</b></div>
-  <div>District: ${object.properties.msoa11nm}</div>
+  <div>District: ${object.properties.MSOA11NM}</div>
   <div><b>${object.properties.newcases}</b> new cases latest 7 days</div>
   <div>7-day case rate per 100k: <b>${object.properties.caserate}</b></div>
   `
