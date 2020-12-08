@@ -7,6 +7,7 @@
     <!-- Mapbox dependencies -->
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js" integrity="sha512-C2RveGuPIWqkaLAluvoxyiaN1XYNe5ss11urhZWZYBUA9Ydgj+hfGKPcxCzTwut1/fmjEZR7Ac35f2aycT8Ogw==" crossorigin="anonymous"></script>
     <style type="text/css">
       body {
       background: #111; 
@@ -121,6 +122,7 @@ font-size: .625rem;
 
   <script type="text/javascript">
 
+
 var xmlhttp = new XMLHttpRequest();
 xmlhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
@@ -144,6 +146,27 @@ function colorScale(x) {
   return COLOR_SCALE[i] || COLOR_SCALE[COLOR_SCALE.length - 1];
 }
 
+ const COLOR_SCALE = d3.scaleThreshold()
+  .domain([0, 10, 50, 100, 200, 400, 600, 800])
+  .range([
+   [65, 182, 196], // blue turquoise //10
+   [199, 233, 180], //light green
+   [255, 237, 160], // lighter yellow
+   [254, 217, 118], // yellow
+   [254, 178, 76], //tan
+    // zero
+    [253, 141, 60], //orange
+    [189, 0, 38], // 900 // red
+//    [254, 178, 76],
+ //   [253, 141, 60],
+ //   [252, 78, 42],
+ //   [227, 26, 28],
+ //   [189, 0, 38],
+      [128, 0, 38] // 1000 // dark red
+  ]);
+
+
+/*
 const COLOR_SCALE = [
     [65, 182, 196], // blue turquoise //10
  //   [127, 205, 187], // bluegreen
@@ -160,7 +183,7 @@ const COLOR_SCALE = [
     [189, 0, 38], // 900 // red
     [128, 0, 38] // 1000 // dark red
   ];
-
+*/
 
   const INITIAL_VIEW_STATE = {
   longitude: -1.415727,
@@ -253,7 +276,7 @@ const deckgl = new deck.DeckGL({
   //    elevationRange: [1, 5000],
       elevationScale: 100,
       getElevation: f => f.properties.newcases,
-      getFillColor: f => colorScale(f.properties.caserate),
+      getFillColor: f => COLOR_SCALE(f.properties.caserate),
       getLineColor: [255, 255, 255],
       pickable: true,
       transitions: {

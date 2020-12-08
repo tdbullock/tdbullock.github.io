@@ -1,0 +1,170 @@
+<html>
+  <head>
+    <title>Place names of Norse Origin</title>
+    <!-- deck.gl standalone bundle -->
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/carto@^8.3.0/dist.min.js"></script>
+
+    <!-- Mapbox dependencies -->
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css" rel="stylesheet" />
+    <style type="text/css">
+      body {
+      background: #111; 
+      margin: 0; 
+      padding: 0;
+      }
+      #container {width: 100vw; height: 100vh;}
+      
+.deck-tooltip {
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  padding: 4px;
+  margin: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  max-width: 300px;
+  font-size: 15px;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.legend{
+
+position: absolute;
+right: 10px;
+top: 10px;
+background-color: rgba(255,255,255,.65);
+color: #000;
+padding: 7px;
+width: 200px;
+font-family: Graphik,sans-serif;
+font-size: .7rem;
+border: 1px solid #16595a;
+border-radius: 5px;
+
+}
+
+.legend-break {
+line-height: 1.1;
+margin-bottom: 1px;
+display: flex;
+align-items: center;
+} 
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <div class="legend">
+     <h3>Place name suffixes</h3>
+      <div class="legend-break">--by: farmstead or village</div>
+      <div class="legend-break">--thorpe: secondary settlement</div>
+      <div class="legend-break">--thwaite: woodland clearing</div>
+      <div class="legend-break">--toft: site of a building</div>
+      <div class="legend-break">--keld: spring</div>
+      <div class="legend-break">--ness: headland</div>
+      <div class="legend-break">--kirk: church</div>
+      <div class="legend-break">--holme: land reclaimed from marshes</div>
+      <div class="legend-break">--beck: stream</div>
+    </br>
+      <div class="legend-break">Town location data from geoportal.statistics.gov.uk
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+
+// Source data GeoJSON
+const DATA_URL =
+  'vikingplacenames.geojson'; // eslint-disable-line
+
+  const INITIAL_VIEW_STATE = {
+  longitude: -1.415727,
+  latitude: 55.0,
+  zoom: 5,
+  minZoom: 5,
+  maxZoom: 15,
+  pitch: 0,
+  bearing: 0
+};
+
+
+function getTooltip({object}) {
+  return (
+    object && {
+      html: `\
+  <div><b> ${object.properties.place15nm}</b></div>
+  <div>${object.properties.ctyltnm}</div>
+  `
+    }
+  );
+}
+
+
+
+
+const deckgl = new deck.DeckGL({
+  container: 'container',
+  controller: true,
+  initialViewState: INITIAL_VIEW_STATE,
+//  effects: lightingEffect,
+  controller: true,
+  
+  mapStyle: deck.carto.BASEMAP.VOYAGER,
+//  mapStyle: MAP_STYLE,
+  getTooltip:getTooltip,
+  layers: [
+  new deck.GeoJsonLayer({
+      id: 'geojsonAS',
+      data: 'AngloSaxonplacenames.geojson',
+      filled: true,
+      pointRadiusMinPixels: 3,
+      pointRadiusMaxPixels: 6000,
+      pointRadiusScale: 1,
+      getRadius: 100,
+      getFillColor: [0, 0, 200, 180],
+      // Interactive props
+      pickable: true,
+      autoHighlight: true
+    }),
+    new deck.GeoJsonLayer({
+      id: 'geojson',
+      data: 'vikingplacenames.geojson',
+      filled: true,
+      pointRadiusMinPixels: 3,
+      pointRadiusMaxPixels: 6000,
+      pointRadiusScale: 1,
+      getRadius: 100,
+      getFillColor: [200, 0, 80, 180],
+      // Interactive props
+      pickable: true,
+      autoHighlight: true
+    }),
+    
+    new deck.TextLayer({
+      data: [
+        {position: [-15, 58], text: 'Norse & Anglo Saxon Place Names'},
+      ],
+      maxwidth:10,
+      getSize: 28,
+    getTextAnchor: 'start',
+    getAlignmentBaseline: 'center'
+
+
+      }),
+      new deck.TextLayer({
+      data: [
+        {position: [-15, 57.7], text: 'Tom Bullock'}
+      ],
+      maxwidth:10,
+      getSize: 25,
+      getTextAnchor: 'start',
+      getAlignmentBaseline: 'center'
+
+
+      })
+  ]
+});
+  </script>
+</html>

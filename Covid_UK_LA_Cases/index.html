@@ -140,7 +140,7 @@ const DATA_URL =
   'LA_casesJson.geojson'; // eslint-disable-line
 
 function colorScale(x) {
-  const i = Math.round(x * 0.01);
+  const i = Math.floor(x * 0.01);
   if (x < 0) {
     return COLOR_SCALE[i] || COLOR_SCALE[0];
   }
