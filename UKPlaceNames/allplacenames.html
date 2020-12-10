@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Place names of Norse Origin</title>
+    <title>Place names of Norse and Anglo-Saxon Origin</title>
     <!-- deck.gl standalone bundle -->
     <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
     <script src="https://unpkg.com/@deck.gl/carto@^8.3.0/dist.min.js"></script>
@@ -57,20 +57,29 @@ align-items: center;
   <body>
     <div id="container"></div>
     <div class="legend">
-     <h3>Place name suffixes</h3>
-      <div class="legend-break">--by: farmstead or village</div>
-      <div class="legend-break">--thorpe: secondary settlement</div>
-      <div class="legend-break">--thwaite: woodland clearing</div>
-      <div class="legend-break">--toft: site of a building</div>
-      <div class="legend-break">--keld: spring</div>
-      <div class="legend-break">--ness: headland</div>
-      <div class="legend-break">--kirk: church</div>
-      <div class="legend-break">--holme: land reclaimed from marshes</div>
-      <div class="legend-break">--beck: stream</div>
-    </br>
-      <div class="legend-break">Town location data from geoportal.statistics.gov.uk
-      </div>
-    </div>
+      <h3>Place name suffixes</h3>
+      <div class="legend-break"><b>Norse:</b></div>
+       <div class="legend-break">--by: farmstead or village</div>
+       <div class="legend-break">--thorpe: secondary settlement</div>
+       <div class="legend-break">--thwaite: woodland clearing</div>
+       <div class="legend-break">--toft: site of a building</div>
+       <div class="legend-break">--keld: spring</div>
+       <div class="legend-break">--ness: headland</div>
+       <div class="legend-break">--kirk: church</div>
+       <div class="legend-break">--holme: land reclaimed from marshes</div>
+       <div class="legend-break">--beck: stream</div>
+       <div class="legend-break">&nbsp;</div>
+       <div class="legend-break"><b>Anglo-Saxon:</b></div>
+       <div class="legend-break">--ton: enclosed village or farmstead</div>
+       <div class="legend-break">--ford: shallow river crossing</div>
+       <div class="legend-break">--ham: village</div>
+       <div class="legend-break">--wick: produce of a farm</div>
+       <div class="legend-break">--worth: enclosure</div>
+       <div class="legend-break">--borough: town</div>
+     </br>
+       <div class="legend-break">Town location data from geoportal.statistics.gov.uk
+       </div>
+     </div>
   </body>
 
   <script type="text/javascript">
@@ -130,7 +139,7 @@ const deckgl = new deck.DeckGL({
     }),
     new deck.TextLayer({
       data: [
-        {position: [-15, 58], text: 'Norse & Anglo Saxon Place Names'},
+        {position: [-15, 58], text: 'Norse & Anglo-Saxon Place Names'},
       ],
       maxwidth:10,
       getSize: 28,
