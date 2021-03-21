@@ -1,0 +1,334 @@
+<html>
+  <head>
+    <title>
+      COVID-19 England Vaccinations by MSOA
+    </title>
+    <!--
+      MSOA Info:  https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/middlesuperoutputareamidyearpopulationestimates
+      Vaccinations:  https://www.england.nhs.uk/statistics/statistical-work-areas/covid-19-vaccinations/
+    -->
+    <!-- deck.gl standalone bundle -->
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    <script src="https://unpkg.com/@deck.gl/carto@^8.3.0/dist.min.js"></script>
+
+    <!-- Mapbox dependencies -->
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js" integrity="sha512-C2RveGuPIWqkaLAluvoxyiaN1XYNe5ss11urhZWZYBUA9Ydgj+hfGKPcxCzTwut1/fmjEZR7Ac35f2aycT8Ogw==" crossorigin="anonymous"></script>
+    <style type="text/css">
+      body {
+      background: #111; 
+      margin: 0; 
+      padding: 0;
+      }
+      #container {width: 100vw; height: 100vh;}
+      
+.legend{
+
+	position: absolute;
+	right: 0;
+	top: 0;
+	background-color: rgba(0,0,0,.65);
+	color: #fff;
+	padding: 7px;
+	width: 50px;
+	font-family: Graphik,sans-serif;
+	font-size: .625rem;
+
+}
+
+.info{
+
+position: absolute;
+left: 0;
+bottom: 0;
+background-color: rgba(0,0,0,.65);
+color: #fff;
+padding: 7px;
+width: 200px;
+font-family: Graphik,sans-serif;
+font-size: .625rem;
+
+}
+
+.legend-break {
+	line-height: 1.1;
+	margin-bottom: 1px;
+	display: flex;
+	align-items: center;
+}
+
+.deck-tooltip {
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  padding: 4px;
+  margin: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  opacity: 0.95;
+  color: #fff;
+  max-width: 320px;
+  font-size: 13px;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.tooltip-smaller
+{
+  font-size: 11px;
+}
+.tooltip-larger
+{
+  font-size: 15px;
+}
+
+.table { display: table; }
+.row { display: table-row; }
+.cell { display: table-cell; }
+
+
+    </style>
+  </head>
+
+  <body>
+    <div id="container"></div>
+    <div class="legend">
+     
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(128, 0, 38);"></span>
+        <span>0%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(189, 0, 38);"></span>
+        <span>10%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(253, 141, 60);"></span>
+        <span>20%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254, 178, 76);"></span>
+        <span>30%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254, 217, 118);"></span>
+        <span>40%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(255, 237, 160);"></span>
+        <span>50%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(199, 233, 180);"></span>
+        <span>60%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(127, 205, 187);"></span>
+        <span>70%</span>
+      </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(65, 182, 196);"></span>
+        <span>80%</span>
+      </div>
+    </div>
+    <div class="info">
+      <div class="legend-break">Data to:&nbsp;<span id="latest"></span></div>
+        <div class="legend-break">Vaccination data: england.nhs.uk</div>
+        <div class="legend-break">Population data: ons.gov.uk</div>
+        <div class="legend-break">Map data: geoportal.statistics.gov.uk</div>
+      
+    </div>
+  </body>
+
+  <script type="text/javascript">
+
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var myObj = JSON.parse(this.responseText);
+ //   document.getElementById("update").innerHTML = myObj.updates[0].updated;
+    document.getElementById("latest").innerHTML = myObj.updates[0].latestdate;
+  }
+};
+xmlhttp.open("GET", "updates.json", true);
+xmlhttp.send();
+
+// Source data GeoJSON
+const DATA_URL =
+  'msoa_vaccinations_total.geojson'; // eslint-disable-line
+
+function colorScale(x) {
+  const i = Math.floor(x);
+  if (x < 0) {
+    return COLOR_SCALE[i] || COLOR_SCALE[0];
+  }
+  return COLOR_SCALE[i] || COLOR_SCALE[COLOR_SCALE.length - 1];
+}
+
+//const COLOR_SCALE = d3.interpolateBuGn();
+
+
+ const COLOR_SCALE = d3.scaleLinear()
+  .domain([0, 10, 20, 30, 40, 50, 60, 70,80])
+  .range([
+
+
+   
+   
+  
+    // zero
+    
+    
+//    [254, 178, 76],
+ //   [253, 141, 60],
+ //   [252, 78, 42],
+ //   [227, 26, 28],
+ //   [189, 0, 38],
+      [128, 0, 38] // 1000 // dark red
+      [189, 0, 38], // 900 // red
+      [253, 141, 60], //orange
+      [254, 178, 76], //tan
+      [254, 217, 118], // yellow
+      [255, 237, 160], // lighter yellow
+      [199, 233, 180], //light green
+      [127, 205, 187], // bluegreen
+      [65, 182, 196], // blue turquoise //10
+
+  ]);
+
+
+/*
+const COLOR_SCALE = [
+    [65, 182, 196], // blue turquoise //10
+ //   [127, 205, 187], // bluegreen
+    [199, 233, 180], //light green
+ //   [237, 248, 177], // pale green
+    // nine
+    [255, 255, 204], // very light yellow
+    [255, 237, 160], // lighter yellow
+    [254, 217, 118], // yellow
+    [254, 178, 76], //tan
+    [253, 141, 60], //orange
+//    [252, 78, 42], // orangy red
+    [227, 26, 28], // lighter red
+    [189, 0, 38], // 900 // red
+    [128, 0, 38] // 1000 // dark red
+  ];
+*/
+
+  const INITIAL_VIEW_STATE = {
+  longitude: -2,
+  latitude: 52.132395,
+  zoom: 6.4,
+  minZoom: 5,
+  maxZoom: 15,
+  pitch: 40.5,
+  bearing: -27
+};
+
+
+
+
+
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json';
+
+const ambientLight = new deck.AmbientLight({
+  color: [255, 255, 255],
+  intensity: 1.0
+});
+
+
+const pointLight1 = new deck.PointLight({
+  color: [255, 255, 255],
+  intensity: 0.8,
+  position: [-0.144528, 49.739968, 80000]
+});
+
+const material = {
+  ambient: 0.64,
+  diffuse: 0.6,
+  shininess: 32,
+  specularColor: [51, 51, 51]
+};
+ 
+const landCover = [[[-123.0, 49.196], [-123.0, 49.324], [-123.306, 49.324], [-123.306, 49.196]]];
+
+
+
+function getTooltip({object}) {
+  return (
+    object && {
+      html: `\
+  <div class="tooltip-larger"><b>${object.properties.MSOAName}</b></div>
+  <div><b>${object.properties.LTLAName}</b></div>
+  <div><br/></div>
+  <div><b>${object.properties.PercentageVaccinated}</b>% of adult population vaccinated (at least 1 dose)</div>
+  <div><b>${object.properties.PercentageVaccinatedOver55}</b>% of 55+ vaccinated (at least 1 dose)</div>
+  <div><b>${object.properties.PercentageVaccinatedUnder55}</b>% of under 55s vaccinated (at least 1 dose)</div>
+  <div><br/></div>
+  <div><b> ${object.properties.Aged18andOver}</b> est. 2019 population 18 or over</div>
+  <div><b> ${object.properties.Total}</b> people vaccinated with at least 1 dose</div>
+  <div><br/></div>
+  <div class="tooltip-smaller"><b>Area Population Demographics (2019 estimates)</b></div>
+  <div class="tooltip-smaller">${object.properties.AllAges} total population</div>
+  <div class="tooltip-smaller">${object.properties.PercentagePopUnder18}% under 18</div>
+  <div class="tooltip-smaller">${object.properties.PercentagePop18to54}% 18-54</div>
+  <div class="tooltip-smaller">${object.properties.PercentagePop55andOver}% 55+</div>
+  
+  `
+    }
+  );
+}
+
+
+
+const lightingEffect = new deck.LightingEffect({ambientLight, pointLight1});
+//lightingEffect.shadowColor = [0, 0, 0, 0.5];
+
+
+
+const deckgl = new deck.DeckGL({
+  container: 'container',
+  controller: true,
+  initialViewState: INITIAL_VIEW_STATE,
+//  effects: lightingEffect,
+  controller: true,
+  
+ // mapStyle: deck.carto.BASEMAP.DARK_MATTER,
+  mapStyle: deck.carto.BASEMAP.POSITRON,
+//  mapStyle: MAP_STYLE,
+  getTooltip:getTooltip,
+  layers: [
+    // only needed when using shadows - a plane for shadows to drop on
+  /*   new deck.PolygonLayer({
+      id: 'ground',
+      data: landCover,
+      stroked: false,
+      getPolygon: f => f,
+      getFillColor: [0, 0, 0, 0]
+    }), */
+    new deck.GeoJsonLayer({
+      id: 'geojson',
+      data: DATA_URL,
+      opacity: 0.7,
+ //     colorRange,
+      stroked: true,
+      filled: true,
+ //     extruded: true,
+ //     material,
+      wireframe: false,
+  //    elevationRange: [1, 5000],
+      elevationScale: 100,
+      getElevation: f => f.properties.PercentageVaccinated,
+      getFillColor: f => COLOR_SCALE(f.properties.PercentageVaccinated),
+      getLineColor: [80, 80, 80],
+      pickable: true,
+      transitions: {
+        getElevation: 500,
+        getFillColor: 500,
+    },   
+    })
+  ]
+});
+  </script>
+</html>
