@@ -112,7 +112,7 @@ a:hover { text-decoration: underline; }
 
   <body>
     <div id="container"></div>
-    <div class="legend">
+  <!--  <div class="legend">
      
       <div class="legend-break">
         <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(165,0,38);"></span>
@@ -156,6 +156,7 @@ a:hover { text-decoration: underline; }
       </div>
 
     </div>
+    -->
     <div class="info">
       <div class="legend-break">Data to:&nbsp;<span id="latest"></span></div>
         <div class="legend-break">Vaccination data: &nbsp;<a href="https://www.england.nhs.uk/statistics/statistical-work-areas/covid-19-vaccinations/" target="_blank">england.nhs.uk</a></div>
@@ -175,10 +176,10 @@ a:hover { text-decoration: underline; }
         <label for="percentageover18">Percentage all adult population</label><br>
 
         <input type="radio" id="percentageunder55" name="usenumber" value="percentageunder55" onclick="handleClick(this);">
-        <label for="percentageunder55">Percentage aged 18-54</label><br>
+        <label for="percentageunder55">Percentage aged 18-49</label><br>
 
         <input type="radio" id="percentageover55" name="usenumber" value="percentageover55" onclick="handleClick(this);">
-        <label for="percentageover55">Percentage aged 55+</label>
+        <label for="percentageover55">Percentage aged 50+</label>
       </div>
      <br>
       <svg></svg>
@@ -302,8 +303,8 @@ function getTooltip({object}) {
   <div><b>${object.properties.LTLAName}</b></div>
   <div><br/></div>
   <div><b>${object.properties.PercentageVaccinated}</b>% of adult population vaccinated (at least 1 dose)</div>
-  <div><b>${object.properties.PercentageVaccinatedOver55}</b>% of 55+ vaccinated (at least 1 dose)</div>
-  <div><b>${object.properties.PercentageVaccinatedUnder55}</b>% of 18-54 vaccinated (at least 1 dose)</div>
+  <div><b>${object.properties.PercentageVaccinatedOver50}</b>% of 50+ vaccinated (at least 1 dose)</div>
+  <div><b>${object.properties.PercentageVaccinatedUnder50}</b>% of 18-49 vaccinated (at least 1 dose)</div>
   <div><br/></div>
   <div><b> ${object.properties.Aged18andOver}</b> est. 2019 population 18 or over</div>
   <div><b> ${object.properties.Total}</b> people vaccinated with at least 1 dose</div>
@@ -311,8 +312,8 @@ function getTooltip({object}) {
   <div class="tooltip-smaller"><b>Area Population Demographics (2019 estimates)</b></div>
   <div class="tooltip-smaller">Total population: ${object.properties.AllAges}</div>
   <div class="tooltip-smaller">${object.properties.PercentagePopUnder18}% under 18</div>
-  <div class="tooltip-smaller">${object.properties.PercentagePop18to54}% 18-54</div>
-  <div class="tooltip-smaller">${object.properties.PercentagePop55andOver}% 55+</div>
+  <div class="tooltip-smaller">${object.properties.PercentagePop18to49}% 18-49</div>
+  <div class="tooltip-smaller">${object.properties.PercentagePop50andOver}% 50+</div>
   
   `
     }
@@ -382,10 +383,10 @@ function getValues(data){
       num = data.properties.PercentageVaccinated;
       break;
     case "percentageover55" : 
-      num = data.properties.PercentageVaccinatedOver55;
+      num = data.properties.PercentageVaccinatedOver50;
       break;
     case "percentageunder55" : 
-      num = data.properties.PercentageVaccinatedUnder55;
+      num = data.properties.PercentageVaccinatedUnder50;
       break;
     }
  //console.log(num);
