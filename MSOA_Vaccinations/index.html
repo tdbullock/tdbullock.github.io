@@ -15,6 +15,9 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js" integrity="sha512-C2RveGuPIWqkaLAluvoxyiaN1XYNe5ss11urhZWZYBUA9Ydgj+hfGKPcxCzTwut1/fmjEZR7Ac35f2aycT8Ogw==" crossorigin="anonymous"></script>
+    
+   
+    
     <style type="text/css">
       body {
       background: #111; 
@@ -51,6 +54,13 @@ font-size: .625rem;
 
 }
 
+a {
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
+}
+
+a:hover { text-decoration: underline; }
+
 .legend-break {
 	line-height: 1.1;
 	margin-bottom: 1px;
@@ -85,6 +95,17 @@ font-size: .625rem;
 .row { display: table-row; }
 .cell { display: table-cell; }
 
+#control-panel {
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  background: #fff;
+  font-size: 13px;
+  top: 0;
+  left: 0;
+  margin: 12px;
+  padding: 10px;
+  z-index: 1;
+}
 
     </style>
   </head>
@@ -94,49 +115,76 @@ font-size: .625rem;
     <div class="legend">
      
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(128, 0, 38);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(165,0,38);"></span>
         <span>0%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(189, 0, 38);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(215,48,39);"></span>
         <span>10%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(253, 141, 60);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(244,109,67);"></span>
         <span>20%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254, 178, 76);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(253,174,97);"></span>
         <span>30%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254, 217, 118);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(254,224,144);"></span>
         <span>40%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(255, 237, 160);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(224,243,248);"></span>
         <span>50%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(199, 233, 180);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(171,217,233);"></span>
         <span>60%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(127, 205, 187);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(116,173,209);"></span>
         <span>70%</span>
       </div>
       <div class="legend-break">
-        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(65, 182, 196);"></span>
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(69,117,180);"></span>
         <span>80%</span>
       </div>
+      <div class="legend-break">
+        <span style="display: inline-block; height: 1.5em; width: 0.75em; color: rgb(255, 255, 255); margin-right: 5px; background-color: rgb(49,54,149);"></span>
+        <span>90+%</span>
+      </div>
+
     </div>
     <div class="info">
       <div class="legend-break">Data to:&nbsp;<span id="latest"></span></div>
-        <div class="legend-break">Vaccination data: england.nhs.uk</div>
-        <div class="legend-break">Population data: ons.gov.uk</div>
-        <div class="legend-break">Map data: geoportal.statistics.gov.uk</div>
+        <div class="legend-break">Vaccination data: &nbsp;<a href="https://www.england.nhs.uk/statistics/statistical-work-areas/covid-19-vaccinations/" target="_blank">england.nhs.uk</a></div>
+        <div class="legend-break">Population data: &nbsp;<a href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/middlesuperoutputareamidyearpopulationestimates" target="_blank">ons.gov.uk</a></div>
+        <div class="legend-break">Map data: &nbsp;<a href="https://geoportal.statistics.gov.uk/search?collection=Dataset&sort=name&tags=all(BDY_MSOA%2CDEC_2011)" target="_blank">geoportal.statistics.gov.uk</a></div>
       
     </div>
+
+
+    <div id="control-panel">
+      <div class="tooltip-larger">
+        COVID-19 Vaccinations - England by MSOA
+      </div>
+      <div><br></div>
+      <div>
+        <input type="radio" id="percentageover18" name="usenumber" value="percentageover18" checked=true onclick="handleClick(this);">
+        <label for="percentageover18">Percentage all adult population</label><br>
+
+        <input type="radio" id="percentageunder55" name="usenumber" value="percentageunder55" onclick="handleClick(this);">
+        <label for="percentageunder55">Percentage aged 18-54</label><br>
+
+        <input type="radio" id="percentageover55" name="usenumber" value="percentageover55" onclick="handleClick(this);">
+        <label for="percentageover55">Percentage aged 55+</label>
+      </div>
+     <br>
+      <svg></svg>
+    </div>
+
+
   </body>
 
   <script type="text/javascript">
@@ -165,19 +213,14 @@ function colorScale(x) {
   return COLOR_SCALE[i] || COLOR_SCALE[COLOR_SCALE.length - 1];
 }
 
-//const COLOR_SCALE = d3.interpolateBuGn();
+//const COLOR_SCALE = d3.interpolateYlGnBu();
 
-
+/*
  const COLOR_SCALE = d3.scaleLinear()
   .domain([0, 10, 20, 30, 40, 50, 60, 70,80])
   .range([
 
-
-   
-   
-  
     // zero
-    
     
 //    [254, 178, 76],
  //   [253, 141, 60],
@@ -195,38 +238,34 @@ function colorScale(x) {
       [65, 182, 196], // blue turquoise //10
 
   ]);
+  */
 
+  const COLOR_SCALE = d3.scaleLinear()
+  .domain([0, 10, 20, 30, 40, 50, 60, 70,80,90])
+  .range([
 
-/*
-const COLOR_SCALE = [
-    [65, 182, 196], // blue turquoise //10
- //   [127, 205, 187], // bluegreen
-    [199, 233, 180], //light green
- //   [237, 248, 177], // pale green
-    // nine
-    [255, 255, 204], // very light yellow
-    [255, 237, 160], // lighter yellow
-    [254, 217, 118], // yellow
-    [254, 178, 76], //tan
-    [253, 141, 60], //orange
-//    [252, 78, 42], // orangy red
-    [227, 26, 28], // lighter red
-    [189, 0, 38], // 900 // red
-    [128, 0, 38] // 1000 // dark red
-  ];
-*/
+      [165,0,38] // 1000 // dark red
+      [215,48,39], // 900 // red
+      [244,109,67], //orange
+      [253,174,97], //tan
+      [254,224,144], // yellow
+      [224,243,248], // lighter yellow
+      [171,217,233], //light green
+      [116,173,209], // bluegreen
+      [69,117,180], // blue turquoise //10
+      [49,54,149]
+
+  ]);
 
   const INITIAL_VIEW_STATE = {
   longitude: -2,
-  latitude: 52.132395,
-  zoom: 6.4,
+  latitude: 52.532395,
+  zoom: 6.2,
   minZoom: 5,
   maxZoom: 15,
-  pitch: 40.5,
-  bearing: -27
+  pitch: 30,
+  bearing: -15
 };
-
-
 
 
 
@@ -264,7 +303,7 @@ function getTooltip({object}) {
   <div><br/></div>
   <div><b>${object.properties.PercentageVaccinated}</b>% of adult population vaccinated (at least 1 dose)</div>
   <div><b>${object.properties.PercentageVaccinatedOver55}</b>% of 55+ vaccinated (at least 1 dose)</div>
-  <div><b>${object.properties.PercentageVaccinatedUnder55}</b>% of under 55s vaccinated (at least 1 dose)</div>
+  <div><b>${object.properties.PercentageVaccinatedUnder55}</b>% of 18-54 vaccinated (at least 1 dose)</div>
   <div><br/></div>
   <div><b> ${object.properties.Aged18andOver}</b> est. 2019 population 18 or over</div>
   <div><b> ${object.properties.Total}</b> people vaccinated with at least 1 dose</div>
@@ -280,55 +319,257 @@ function getTooltip({object}) {
   );
 }
 
-
+let typeofvalue = null;
 
 const lightingEffect = new deck.LightingEffect({ambientLight, pointLight1});
 //lightingEffect.shadowColor = [0, 0, 0, 0.5];
 
+const {DeckGL, GeoJsonLayer} = deck;
 
-
-const deckgl = new deck.DeckGL({
+const deckgl = new DeckGL({
   container: 'container',
   controller: true,
   initialViewState: INITIAL_VIEW_STATE,
-//  effects: lightingEffect,
   controller: true,
   
  // mapStyle: deck.carto.BASEMAP.DARK_MATTER,
   mapStyle: deck.carto.BASEMAP.POSITRON,
-//  mapStyle: MAP_STYLE,
-  getTooltip:getTooltip,
-  layers: [
-    // only needed when using shadows - a plane for shadows to drop on
-  /*   new deck.PolygonLayer({
-      id: 'ground',
-      data: landCover,
-      stroked: false,
-      getPolygon: f => f,
-      getFillColor: [0, 0, 0, 0]
-    }), */
-    new deck.GeoJsonLayer({
+
+  getTooltip:getTooltip
+  
+});
+
+
+renderLayer();
+
+function renderLayer () {
+
+    const geolayer = new GeoJsonLayer({
       id: 'geojson',
       data: DATA_URL,
       opacity: 0.7,
- //     colorRange,
       stroked: true,
       filled: true,
  //     extruded: true,
  //     material,
       wireframe: false,
-  //    elevationRange: [1, 5000],
+      elevationRange: [1, 5000],
       elevationScale: 100,
-      getElevation: f => f.properties.PercentageVaccinated,
-      getFillColor: f => COLOR_SCALE(f.properties.PercentageVaccinated),
+      getElevation: f => getValues(f),
+      getFillColor: f => COLOR_SCALE(getValues(f)),
       getLineColor: [80, 80, 80],
       pickable: true,
-      transitions: {
-        getElevation: 500,
-        getFillColor: 500,
-    },   
-    })
-  ]
+      updateTriggers: {
+      // This tells deck.gl to recalculat radius when `currentYear` changes
+        getFillColor: typeofvalue
+    }
+    });
+
+deckgl.setProps({
+  layers: [geolayer]
 });
+
+}
+
+function getValues(data){
+ 
+ // var radioButtons = document.getElementsByName("usenumber"); // nodeList
+
+   let radioButtons = Array.from(document.getElementsByName("usenumber")).find(r => r.checked).value;
+  var num = 0;
+  switch(radioButtons){
+    case "percentageover18" : 
+      num = data.properties.PercentageVaccinated;
+      break;
+    case "percentageover55" : 
+      num = data.properties.PercentageVaccinatedOver55;
+      break;
+    case "percentageunder55" : 
+      num = data.properties.PercentageVaccinatedUnder55;
+      break;
+    }
+ //console.log(num);
+  return num;
+ 
+}
+
+
+var currentValue = 0;
+function handleClick(myRadio) {
+ //   alert('Old value: ' + currentValue);
+ //   alert('New value: ' + myRadio.value);
+    currentValue = myRadio.value;
+    geolayer = null;
+    typeofvalue = myRadio.value;
+    console.log(typeofvalue);
+    renderLayer();
+
+
+}
+
   </script>
+
+
+<script>
+
+  function legend({
+    color,
+    title,
+    tickSize = 6,
+    width = 320,
+    height = 44 + tickSize,
+    marginTop = 18,
+    marginRight = 0,
+    marginBottom = 16 + tickSize,
+    marginLeft = 0,
+    ticks = width / 64,
+    tickFormat,
+    tickValues
+  } = {}) {
+    const svg = d3.select("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .style("overflow", "visible")
+      .style("display", "block");
+  
+    let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
+    let x;
+  
+    // Continuous
+    if (color.interpolate) {
+      const n = Math.min(color.domain().length, color.range().length);
+  
+      x = color.copy().rangeRound(d3.quantize(d3.interpolate(marginLeft, width - marginRight), n));
+  
+      svg.append("image")
+        .attr("x", marginLeft)
+        .attr("y", marginTop)
+        .attr("width", width - marginLeft - marginRight)
+        .attr("height", height - marginTop - marginBottom)
+        .attr("preserveAspectRatio", "none")
+        .attr("xlink:href", ramp(color.copy().domain(d3.quantize(d3.interpolate(0, 1), n))).toDataURL());
+    }
+  
+    // Sequential
+    else if (color.interpolator) {
+      x = Object.assign(color.copy()
+        .interpolator(d3.interpolateRound(marginLeft, width - marginRight)), {
+          range() {
+            return [marginLeft, width - marginRight];
+          }
+        });
+  
+      svg.append("image")
+        .attr("x", marginLeft)
+        .attr("y", marginTop)
+        .attr("width", width - marginLeft - marginRight)
+        .attr("height", height - marginTop - marginBottom)
+        .attr("preserveAspectRatio", "none")
+        .attr("xlink:href", ramp(color.interpolator()).toDataURL());
+  
+      // scaleSequentialQuantile doesn’t implement ticks or tickFormat.
+      if (!x.ticks) {
+        if (tickValues === undefined) {
+          const n = Math.round(ticks + 1);
+          tickValues = d3.range(n).map(i => d3.quantile(color.domain(), i / (n - 1)));
+        }
+        if (typeof tickFormat !== "function") {
+          tickFormat = d3.format(tickFormat === undefined ? ",f" : tickFormat);
+        }
+      }
+    }
+  
+    // Threshold
+    else if (color.invertExtent) {
+      const thresholds = color.thresholds ? color.thresholds() // scaleQuantize
+        :
+        color.quantiles ? color.quantiles() // scaleQuantile
+        :
+        color.domain(); // scaleThreshold
+  
+      const thresholdFormat = tickFormat === undefined ? d => d :
+        typeof tickFormat === "string" ? d3.format(tickFormat) :
+        tickFormat;
+  
+      x = d3.scaleLinear()
+        .domain([-1, color.range().length - 1])
+        .rangeRound([marginLeft, width - marginRight]);
+  
+      svg.append("g")
+        .selectAll("rect")
+        .data(color.range())
+        .join("rect")
+        .attr("x", (d, i) => x(i - 1))
+        .attr("y", marginTop)
+        .attr("width", (d, i) => x(i) - x(i - 1))
+        .attr("height", height - marginTop - marginBottom)
+        .attr("fill", d => d);
+  
+      tickValues = d3.range(thresholds.length);
+      tickFormat = i => thresholdFormat(thresholds[i], i);
+    }
+  
+    // Ordinal
+    else {
+      x = d3.scaleBand()
+        .domain(color.domain())
+        .rangeRound([marginLeft, width - marginRight]);
+  
+      svg.append("g")
+        .selectAll("rect")
+        .data(color.domain())
+        .join("rect")
+        .attr("x", x)
+        .attr("y", marginTop)
+        .attr("width", Math.max(0, x.bandwidth() - 1))
+        .attr("height", height - marginTop - marginBottom)
+        .attr("fill", color);
+  
+      tickAdjust = () => {};
+    }
+  
+    svg.append("g")
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(x)
+        .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
+        .tickFormat(typeof tickFormat === "function" ? tickFormat : undefined)
+        .tickSize(tickSize)
+        .tickValues(tickValues))
+      .call(tickAdjust)
+      .call(g => g.select(".domain").remove())
+      .call(g => g.append("text")
+        .attr("x", marginLeft)
+        .attr("y", marginTop + marginBottom - height - 6)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "start")
+        .attr("font-weight", "bold")
+        .text(title));
+  
+    return svg.node();
+  }
+  
+  function ramp(color, n = 256) {
+    var canvas = document.createElement('canvas');
+    canvas.width = n;
+    canvas.height = 1;
+    const context = canvas.getContext("2d");
+    for (let i = 0; i < n; ++i) {
+      context.fillStyle = color(i / (n - 1));
+      context.fillRect(i, 0, 1, 1);
+    }
+    return canvas;
+  }
+  
+  legend({
+    color: d3.scaleSequential([0, 100], d3.interpolateRdYlBu),
+    title: "% vaccinated"
+  })
+  
+      </script>
+
+
+
+
+
 </html>
