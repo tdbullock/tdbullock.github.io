@@ -46,23 +46,41 @@
       width: 50px;
     }
 
-    #calculateButton {
+    button
+    {
       padding: 10px;
-      background-color: #2ecc71; /* Button background color */
       color: #ffffff; /* Button text color */
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin: 2px;
+    }
+
+    #calculateButton {
+      background-color: #2ecc71; /* Button background color */
     }
 
     #randomButton {
-      padding: 10px;
       background-color: #cc2eac; /* Button background color */
-      color: #ffffff; /* Button text color */
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
     }
+
+    .input-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+    .button-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  
+}
 
     .invisible-div {
       display: inline-block;
@@ -264,12 +282,12 @@
 <body>
  <h1>Coin Challenge</h1>
  <div class="input-group">
- <label for="amountInput">Enter amount (£): </label>
- <input type="text" id="amountInput" maxlength="5" onkeyup="calculateChange('input')">
- 
- <button id="calculateButton" onclick="calculateChange('input')">💰 Show Change</button>
- <button  id="randomButton" onclick="calculateChange('random')">🎲 Random</button>
-
+  <label for="amountInput">Enter amount (£): </label>
+  <input type="text" id="amountInput" maxlength="5" onkeyup="calculateChange('input')">
+  <div class="button-group">
+    <button id="calculateButton" onclick="calculateChange('input')">💰 Show Change</button>
+    <button  id="randomButton" onclick="calculateChange('random')">🎲 Random</button>
+  </div>
 </div>
   <div id="coinDisplay"></div>
 <div id="answer" class="invisible-div"></div>
