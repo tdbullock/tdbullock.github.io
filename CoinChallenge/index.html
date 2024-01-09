@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      padding-top: 20px;
+      background-color: white;
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .center-div {
+      background-color: beige;
+    }
+
+    .h1{
+      font-family: 'Arial', sans-serif; /* Font family */
+    }
+
+    #coinDisplay {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .coin {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+    }
+
+    #amountInput {
+      padding: 8px;
+      border: 2px solid #3498db; /* Border color */
+      border-radius: 5px; /* Rounded corners */
+      background-color: #ecf0f1; /* Background color */
+      font-family: 'Arial', sans-serif; /* Font family */
+      text-align: center; /* Center the text */
+      font-size: large;
+      width: 50px;
+    }
+
+    #calculateButton {
+      padding: 10px;
+      background-color: #2ecc71; /* Button background color */
+      color: #ffffff; /* Button text color */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #randomButton {
+      padding: 10px;
+      background-color: #cc2eac; /* Button background color */
+      color: #ffffff; /* Button text color */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .invisible-div {
+      display: inline-block;
+      background-color: #ccc;
+      padding: 10px;
+      border: 2px dashed #666;
+      border-radius: 10px;
+      color: transparent;
+      transition: border 0.3s, color 0.3s;
+      margin-top: 20px;
+    }
+
+    .invisible-div:hover {
+      border: 2px solid #333;
+      color: #333;
+    }
+
+  </style>
+  <style>
+    #coinDisplay {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .coin {
+      margin: 5px;
+    }
+
+    .two-pound {
+      width: 115px;
+      height: 115px;
+    }
+
+    .one-pound {
+      width: 98px;
+      height: 98px;
+    }
+
+    .fifty-pence {
+      width: 115px;
+      height: 115px;
+    }
+
+    .twenty-pence {
+      width: 90px;
+      height: 90px;
+    }
+
+    .ten-pence {
+      width: 100px;
+      height: 100px;
+    }
+
+    .five-pence {
+      width: 75px;
+      height: 75px;
+    }
+
+    .two-pence {
+      width: 105px;
+      height: 105px;
+    }
+
+    .one-pence {
+      width: 85px;
+      height: 85px;
+    }
+  </style>
+  <script>
+    async function calculateChange(mode) {
+    
+
+ /*     if (isNaN(amount)) {
+        alert('Please enter a valid number.');
+        return;
+      }
+      */  //sdasdsa
+    var amount = 0;
+    console.debug(mode)
+    const amountInput = document.getElementById('amountInput');
+    switch(mode)
+    {
+
+      case 'input':
+      //  const amountInput = document.getElementById('amountInput');
+        amount = parseFloat(amountInput.value);
+       
+        if (isNaN(amount)) {
+         // alert('Please enter a valid number.');
+          return;
+        }
+        console.debug(amount)
+        break;
+
+    
+
+        case 'random':
+        
+          amountInput.value = '';
+          const randomFraction = Math.random();
+          
+
+          // Scale and shift the random number to the desired range [0, 10]
+          const randomNumber = randomFraction * 10;
+
+          // Round the number to two decimal places
+          const roundedNumber = parseFloat(randomNumber.toFixed(2));
+
+          amount = roundedNumber;
+          break;
+
+      }
+
+        change = getChange(amount);
+        displayCoins(change);
+    }
+    
+
+    function displayCoins(coins) {
+      const coinDisplay = document.getElementById('coinDisplay');
+      coinDisplay.innerHTML = '';
+
+      coins.forEach(coin => {
+        const img = document.createElement('img');
+        img.src = `static/${coin}p.png`; // Assuming you have images for each coin in the 'images' folder
+        img.alt = `${coin}p`;
+        // Apply the appropriate class based on the coin denomination
+        img.className = `coin ${getCoinClass(coin)}`;
+        
+        coinDisplay.appendChild(img);
+      });
+    }
+
+
+    function getCoinClass(coin) {
+      switch (coin) {
+        case 200:
+          return 'two-pound';
+        case 100:
+          return 'one-pound';
+        case 50:
+          return 'fifty-pence';
+        case 20:
+          return 'twenty-pence';
+        case 10:
+          return 'ten-pence';
+        case 5:
+          return 'five-pence';
+        case 2:
+          return 'two-pence';
+        case 1:
+          return 'one-pence';
+        default:
+          return 'unknown-coin';
+      }
+    }
+
+
+    function getChange(amount) {
+  const coins = [200, 100, 50, 20, 10, 5, 2, 1]; // Values of UK coins in pence
+  const change = [];
+
+  // Convert amount to pence
+  amount *= 100;
+  // Deal with floating point numbers in JS
+  amount = Math.round(amount);
+  console.log(amount);
+
+  // Iterate through the coins to find the optimal combination
+  for (let i = 0; i < coins.length; i++) {
+    const coinValue = coins[i];
+    const numCoins = Math.floor(amount / coinValue);
+
+    if (numCoins > 0) {
+      for (let j = 0; j < numCoins; j++) {
+        change.push(coinValue);
+        amount -= coinValue;
+      }
+    }
+  }
+
+  // Convert the change array to pounds and pence
+  const pounds = Math.floor(change.reduce((acc, curr) => acc + curr, 0) / 100);
+  var pence = change.reduce((acc, curr) => acc + curr, 0) % 100;
+  pence = String(pence).padStart(2, '0');
+  console.log(`Change: £${pounds}.${pence}`);
+
+  const valueLabel = document.getElementById('answer');
+  valueLabel.innerHTML = `£${pounds}.${pence}`;
+
+  return change;
+}
+
+
+  </script>
+  <title>Coin Challenge</title>
+</head>
+<body>
+ <h1>Coin Challenge</h1>
+ <div class="input-group">
+ <label for="amountInput">Enter amount (£): </label>
+ <input type="text" id="amountInput" maxlength="5" onkeyup="calculateChange('input')">
+ 
+ <button id="calculateButton" onclick="calculateChange('input')">💰 Show Change</button>
+ <button  id="randomButton" onclick="calculateChange('random')">🎲 Random</button>
+
+</div>
+  <div id="coinDisplay"></div>
+<div id="answer" class="invisible-div"></div>
+
+  
+</body>
+</html>
