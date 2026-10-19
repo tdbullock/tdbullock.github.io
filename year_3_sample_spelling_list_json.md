@@ -1,0 +1,66 @@
+{
+  "year": 3,
+  "title": "UK Primary Year 3 Spelling Lists",
+  "lists": [
+    {
+      "id": "y3_statutory_a",
+      "title": "Year 3 Statutory Words (Set A)",
+      "words": [
+        {
+          "word": "accident",
+          "hint": "An unexpected event",
+          "emoji": "🚗",
+          "sentence": "She had an ___ with her orange juice."
+        },
+        {
+          "word": "actual",
+          "hint": "Real or exact",
+          "emoji": "💯",
+          "sentence": "Is that the ___ answer?"
+        },
+        {
+          "word": "address",
+          "hint": "Where someone lives",
+          "emoji": "🏠",
+          "sentence": "Write your home ___ on the envelope."
+        },
+        {
+          "word": "answer",
+          "hint": "A response to a question",
+          "emoji": "❓",
+          "sentence": "Raise your hand if you know the ___."
+        },
+        {
+          "word": "appear",
+          "hint": "To come into view",
+          "emoji": "🪄",
+          "sentence": "The magician made a rabbit ___."
+        }
+      ]
+    },
+    {
+      "id": "y3_term_autumn1",
+      "title": "Autumn Term - Week 1 Spelling Test",
+      "words": [
+        {
+          "word": "disappear",
+          "hint": "To vanish from sight",
+          "emoji": "🫥",
+          "sentence": "Watch the fog ___ in the bright sunshine."
+        },
+        {
+          "word": "disagree",
+          "hint": "To have a different opinion",
+          "emoji": "🗣️",
+          "sentence": "It is okay to ___ politely."
+        },
+        {
+          "word": "disobey",
+          "hint": "To not follow a rule",
+          "emoji": "🚫",
+          "sentence": "Never ___ safety signs."
+        }
+      ]
+    }
+  ]
+}
