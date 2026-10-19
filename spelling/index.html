@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spelling Superstars - UK Primary School Practice (Years 1-6)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Fredoka One"', 'cursive'],
+            body: ['"Nunito"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              purple: '#7C3AED',
+              pink: '#EC4899',
+              yellow: '#F59E0B',
+              green: '#10B981',
+              blue: '#3B82F6',
+              sky: '#0EA5E9',
+              lightBg: '#F0F9FF',
+            }
+          },
+          keyframes: {
+            bounceGentle: {
+              '0%, 100%': { transform: 'translateY(-4%)' },
+              '50%': { transform: 'translateY(0)' },
+            },
+            popIn: {
+              '0%': { transform: 'scale(0.8)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            rocketLaunch: {
+              '0%': { transform: 'translateY(0)', opacity: '1' },
+              '30%': { transform: 'translateY(-10px) rotate(-1deg)' },
+              '60%': { transform: 'translateY(-30px) rotate(1deg)' },
+              '100%': { transform: 'translateY(-700px) scale(0.6)', opacity: '0.8' }
+            },
+            pulseGlow: {
+              '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(245, 158, 11, 0.8))' },
+              '50%': { filter: 'drop-shadow(0 0 25px rgba(245, 158, 11, 1))' }
+            }
+          },
+          animation: {
+            'bounce-gentle': 'bounceGentle 2s infinite ease-in-out',
+            'pop-in': 'popIn 0.3s ease-out forwards',
+            'rocket-launch': 'rocketLaunch 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+            'pulse-glow': 'pulseGlow 1.5s infinite ease-in-out'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .font-display {
+      font-family: 'Fredoka One', cursive;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 8px;
+    }
+    .key-btn {
+      transition: all 0.1s ease;
+      box-shadow: 0 4px 0 #94a3b8;
+    }
+    .key-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #94a3b8;
+    }
+    .action-btn {
+      transition: all 0.15s ease;
+    }
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+    .action-btn:active {
+      transform: translateY(2px);
+    }
+    /* Rocket SVG part animations */
+    .rocket-part {
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .rocket-part-hidden {
+      opacity: 0.15;
+      transform: scale(0.9);
+      filter: grayscale(1);
+    }
+    .rocket-part-assembled {
+      opacity: 1;
+      transform: scale(1);
+      filter: grayscale(0) drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-sky-100 via-purple-50 to-pink-100 min-h-screen text-slate-800 pb-10 flex flex-col justify-between">
+
+  <!-- TOP HEADER / NAV -->
+  <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-sky-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between flex-wrap gap-2">
+      
+      <!-- Logo -->
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="showScreen('home')">
+        <div class="bg-gradient-to-tr from-amber-400 to-pink-500 p-2 rounded-2xl shadow-md text-white flex items-center justify-center text-xl sm:text-2xl">
+          🚀
+        </div>
+        <div>
+          <h1 class="font-display text-xl sm:text-2xl text-purple-700 leading-none">Spelling Superstars</h1>
+          <p class="text-[10px] sm:text-xs font-bold text-sky-600 tracking-wide uppercase">UK Primary School Edition</p>
+        </div>
+      </div>
+
+      <!-- Controls: Year Selector & Stats Bar -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Year Selector Dropdown -->
+        <div class="flex items-center bg-purple-100 border border-purple-300 rounded-full px-2.5 py-1 shadow-sm">
+          <span class="text-xs font-extrabold text-purple-700 mr-1.5 hidden sm:inline">Year:</span>
+          <select id="year-selector" onchange="changeYearGroup(this.value)" class="bg-transparent font-display text-purple-900 text-sm focus:outline-none cursor-pointer">
+            <option value="1">Year 1</option>
+            <option value="2">Year 2</option>
+            <option value="3" selected>Year 3</option>
+            <option value="4">Year 4</option>
+            <option value="5">Year 5</option>
+            <option value="6">Year 6</option>
+          </select>
+        </div>
+
+        <!-- Stars -->
+        <div class="bg-amber-100 border border-amber-300 rounded-full px-2.5 py-1 flex items-center space-x-1 shadow-sm">
+          <span class="text-amber-500 text-base">⭐</span>
+          <span id="stat-stars" class="font-display text-amber-700 text-sm sm:text-base">0</span>
+        </div>
+
+        <!-- Streak -->
+        <div class="bg-orange-100 border border-orange-300 rounded-full px-2.5 py-1 flex items-center space-x-1 shadow-sm">
+          <span class="text-orange-500 text-base">🔥</span>
+          <span id="stat-streak" class="font-display text-orange-700 text-sm sm:text-base">0</span>
+        </div>
+
+        <!-- Word List Manager Button -->
+        <button onclick="showScreen('lists')" class="bg-purple-600 hover:bg-purple-700 text-white p-2 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm flex items-center space-x-1 transition shadow-sm">
+          <i class="fa-solid fa-list-check"></i>
+          <span class="hidden md:inline">Word Lists</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+
+    <!-- SCREEN 1: HOME / MODE SELECTOR -->
+    <div id="screen-home" class="space-y-6 animate-pop-in">
+      
+      <!-- Banner -->
+      <div class="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row items-center justify-between">
+        <div class="z-10 max-w-lg space-y-2">
+          <span id="banner-year-tag" class="bg-amber-400 text-amber-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Year 3 Primary School</span>
+          <h2 class="font-display text-3xl sm:text-4xl text-yellow-300 drop-shadow-md">Become a Spelling Superstar!</h2>
+          <p class="text-sky-100 text-sm sm:text-base font-semibold">Practice weekly spellings, earn reward stars, and launch space rockets!</p>
+        </div>
+        <div class="mt-4 sm:mt-0 text-7xl sm:text-8xl animate-bounce-gentle select-none">
+          🌟
+        </div>
+      </div>
+
+      <!-- Current Word List Selector Quick Bar -->
+      <div class="bg-white/90 rounded-2xl p-4 shadow-md border border-purple-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center space-x-3">
+          <span class="text-3xl">📚</span>
+          <div>
+            <p class="text-xs text-slate-400 font-extrabold uppercase">Active List (<span id="active-year-label">Year 3</span>)</p>
+            <h3 id="current-list-title" class="font-bold text-purple-900 text-lg sm:text-xl">Statutory Word List A</h3>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="showScreen('lists')" class="bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-4 py-2 rounded-xl text-xs sm:text-sm transition">
+            Change List
+          </button>
+          <button onclick="openAiPromptModal()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-1 transition">
+            <span>✨ AI Prompt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode Selection Grid -->
+      <h3 class="font-display text-2xl text-slate-700 mt-6">Select Your Game Mode:</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Mode 1: Listen & Type -->
+        <div onclick="startMode('listen')" class="bg-white rounded-3xl p-6 shadow-lg border-3 border-blue-200 hover:border-blue-400 transition cursor-pointer group flex flex-col justify-between hover:-translate-y-1 transform">
+          <div>
+            <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+              🎧
+            </div>
+            <h4 class="font-display text-2xl text-blue-700 mb-2">Listen & Type</h4>
+            <p class="text-slate-600 text-sm font-semibold mb-4">Hear the word spoken with a British accent and type it out correctly!</p>
+          </div>
+          <button class="w-full bg-blue-500 group-hover:bg-blue-600 text-white font-display py-3 rounded-2xl shadow-md text-lg">
+            Play Mode
+          </button>
+        </div>
+
+        <!-- Mode 2: Fill in Blanks -->
+        <div onclick="startMode('blanks')" class="bg-white rounded-3xl p-6 shadow-lg border-3 border-pink-200 hover:border-pink-400 transition cursor-pointer group flex flex-col justify-between hover:-translate-y-1 transform">
+          <div>
+            <div class="bg-pink-100 text-pink-600 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+              🧩
+            </div>
+            <h4 class="font-display text-2xl text-pink-700 mb-2">Missing Letters</h4>
+            <p class="text-slate-600 text-sm font-semibold mb-4">Look at the emoji hint and fill in the missing letters of the word!</p>
+          </div>
+          <button class="w-full bg-pink-500 group-hover:bg-pink-600 text-white font-display py-3 rounded-2xl shadow-md text-lg">
+            Play Mode
+          </button>
+        </div>
+
+        <!-- Mode 3: Visual Space Rocket Launch -->
+        <div onclick="startMode('rocket')" class="bg-white rounded-3xl p-6 shadow-lg border-3 border-amber-200 hover:border-amber-400 transition cursor-pointer group flex flex-col justify-between hover:-translate-y-1 transform">
+          <div>
+            <div class="bg-amber-100 text-amber-600 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+              🚀
+            </div>
+            <h4 class="font-display text-2xl text-amber-700 mb-2">Rocket Launch</h4>
+            <p class="text-slate-600 text-sm font-semibold mb-4">Build 5 rocket modules word-by-word and launch into outer space!</p>
+          </div>
+          <button class="w-full bg-amber-500 group-hover:bg-amber-600 text-white font-display py-3 rounded-2xl shadow-md text-lg">
+            Play Mode
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Badges Showcase -->
+      <div class="bg-white/80 rounded-3xl p-6 shadow-md border border-slate-200">
+        <h3 class="font-display text-xl text-slate-700 mb-4 flex items-center gap-2">
+          <span>🏆</span> Your Reward Badges
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="badges-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SCREEN 2: GAMEPLAY -->
+    <div id="screen-game" class="hidden space-y-6 animate-pop-in">
+      
+      <!-- Top Bar inside game -->
+      <div class="flex items-center justify-between bg-white/90 rounded-2xl px-5 py-3 shadow-sm border border-slate-200">
+        <button onclick="showScreen('home')" class="text-slate-500 hover:text-slate-800 font-bold text-sm flex items-center space-x-1">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Quit Game</span>
+        </button>
+
+        <div class="text-center">
+          <p id="game-mode-title" class="font-display text-lg text-purple-700">Listen & Type</p>
+          <p id="game-progress-text" class="text-xs font-extrabold text-slate-400">Word 1 of 10</p>
+        </div>
+
+        <div class="flex items-center space-x-1">
+          <span class="text-amber-500 font-bold text-sm">Score:</span>
+          <span id="game-score" class="font-display text-amber-600 text-lg">0</span>
+        </div>
+      </div>
+
+      <!-- Main Game Card -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-purple-100 flex flex-col items-center text-center space-y-6 relative overflow-hidden">
+        
+        <!-- ROCKET VISUAL ASSEMBLY CANVAS AREA (Only visible in Rocket Launch Mode) -->
+        <div id="rocket-visual-area" class="hidden w-full bg-slate-900 rounded-3xl p-4 sm:p-6 text-white relative min-h-[300px] flex flex-col items-center justify-between overflow-hidden shadow-2xl border-2 border-indigo-900">
+          
+          <!-- Animated Stars Background -->
+          <div class="absolute inset-0 opacity-40 text-xs text-yellow-200 p-2 overflow-hidden pointer-events-none select-none">
+            ✨ 🌟 ✨ 🚀 🌟 ✨ ✨ 🌟 💫 ✨ 🌟 💫 ✨ 🌟
+          </div>
+
+          <!-- Rocket Status Header -->
+          <div class="z-10 text-center space-y-1">
+            <span class="bg-indigo-800/80 text-amber-300 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider border border-indigo-600">
+              Launch Pad Stage <span id="rocket-stage-num">1</span> / 5
+            </span>
+            <p id="rocket-stage-name" class="font-display text-lg sm:text-xl text-yellow-300">Stage 1: Rocket Thruster Engines</p>
+          </div>
+
+          <!-- SVG Visual Rocket Graphic -->
+          <div class="relative w-48 h-56 sm:w-56 sm:h-64 my-2 flex items-center justify-center">
+            
+            <!-- Rocket Launch Smoke/Fire Effect (When Launching) -->
+            <div id="rocket-fire-effect" class="hidden absolute -bottom-10 z-0 flex justify-center items-center">
+              <div class="w-16 h-20 bg-gradient-to-t from-transparent via-amber-500 to-red-600 rounded-full animate-ping opacity-90"></div>
+              <div class="w-10 h-16 bg-yellow-300 rounded-full animate-bounce"></div>
+            </div>
+
+            <!-- The SVG Rocket Parts -->
+            <svg id="rocket-svg" viewBox="0 0 200 240" class="w-full h-full z-10 transition-transform duration-700">
+              
+              <!-- PART 1: Thrusters & Flame Base -->
+              <g id="part-thruster" class="rocket-part rocket-part-hidden">
+                <path d="M75 190 L125 190 L135 220 L65 220 Z" fill="#475569" stroke="#334155" stroke-width="3"/>
+                <rect x="70" y="210" width="15" height="15" rx="3" fill="#DC2626"/>
+                <rect x="115" y="210" width="15" height="15" rx="3" fill="#DC2626"/>
+              </g>
+
+              <!-- PART 2: Main Fuel Tank Body -->
+              <g id="part-body" class="rocket-part rocket-part-hidden">
+                <rect x="65" y="100" width="70" height="92" rx="8" fill="#E2E8F0" stroke="#94A3B8" stroke-width="4"/>
+                <rect x="75" y="110" width="50" height="72" rx="4" fill="#3B82F6" opacity="0.8"/>
+                <line x1="65" y1="145" x2="135" y2="145" stroke="#94A3B8" stroke-width="3"/>
+              </g>
+
+              <!-- PART 3: Side Fins & Stabilizers -->
+              <g id="part-fins" class="rocket-part rocket-part-hidden">
+                <path d="M65 140 L35 195 L65 190 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="3"/>
+                <path d="M135 140 L165 195 L135 190 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="3"/>
+              </g>
+
+              <!-- PART 4: Cockpit Module & Window -->
+              <g id="part-cockpit" class="rocket-part rocket-part-hidden">
+                <circle cx="100" cy="125" r="18" fill="#38BDF8" stroke="#0284C7" stroke-width="4"/>
+                <circle cx="100" cy="125" r="12" fill="#E0F2FE"/>
+                <!-- Cute Astronaut Emoji Overlay -->
+                <text x="91" y="132" font-size="14">👨‍🚀</text>
+              </g>
+
+              <!-- PART 5: Aerodynamic Nose Cone -->
+              <g id="part-nose" class="rocket-part rocket-part-hidden">
+                <path d="M100 30 Q135 100 135 100 L65 100 Q65 100 100 30 Z" fill="#F59E0B" stroke="#D97706" stroke-width="4"/>
+                <polygon points="100,20 104,30 96,30" fill="#EF4444"/>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Countdown / Launch Banner -->
+          <div id="rocket-countdown-overlay" class="hidden font-display text-4xl sm:text-5xl text-yellow-300 animate-pulse-glow py-2">
+            3... 2... 1... BLAST OFF! 🚀
+          </div>
+
+          <!-- Progress Dots -->
+          <div class="flex space-x-2 z-10" id="rocket-dots">
+            <span class="w-3 h-3 rounded-full bg-slate-700 border border-slate-500"></span>
+            <span class="w-3 h-3 rounded-full bg-slate-700 border border-slate-500"></span>
+            <span class="w-3 h-3 rounded-full bg-slate-700 border border-slate-500"></span>
+            <span class="w-3 h-3 rounded-full bg-slate-700 border border-slate-500"></span>
+            <span class="w-3 h-3 rounded-full bg-slate-700 border border-slate-500"></span>
+          </div>
+        </div>
+
+        <!-- Clue / Audio Section -->
+        <div class="space-y-3 w-full flex flex-col items-center">
+          
+          <!-- Emoji Icon / Clue -->
+          <div id="game-emoji-hint" class="text-6xl sm:text-7xl bg-purple-50 p-4 rounded-3xl border-2 border-purple-100 animate-bounce-gentle inline-block shadow-sm">
+            🤔
+          </div>
+
+          <!-- Sentence / Hint Text -->
+          <p id="game-sentence-hint" class="text-lg sm:text-xl font-bold text-slate-700 max-w-xl italic">
+            "The cat sat on the mat."
+          </p>
+
+          <!-- Audio Controls -->
+          <div id="audio-controls" class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button onclick="speakCurrentWord(1.0)" class="action-btn bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-display px-6 py-3 rounded-2xl shadow-md flex items-center space-x-2 text-base sm:text-lg">
+              <i class="fa-solid fa-volume-high text-xl"></i>
+              <span>Listen Word 🔊</span>
+            </button>
+            <button onclick="speakCurrentWord(0.7)" class="action-btn bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold px-4 py-3 rounded-2xl border border-sky-300 flex items-center space-x-1 text-xs sm:text-sm">
+              <span>🐢 Slower</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Word Display / Blank Inputs Area -->
+        <div id="word-letters-container" class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 my-2 min-h-[60px]">
+          <!-- Letter boxes injected here -->
+        </div>
+
+        <!-- Direct Keyboard Input Box for Listen & Type -->
+        <div id="direct-input-container" class="w-full max-w-md space-y-3">
+          <input type="text" id="type-input" autocomplete="off" spellcheck="false" placeholder="Type your answer..." 
+            class="w-full text-center font-display text-2xl sm:text-3xl tracking-widest uppercase py-3.5 px-4 rounded-2xl border-3 border-purple-300 focus:border-purple-600 focus:outline-none shadow-inner bg-slate-50 text-purple-900">
+          
+          <button onclick="checkAnswer()" class="action-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-display text-xl py-3.5 rounded-2xl shadow-lg flex items-center justify-center space-x-2">
+            <span>Check Answer</span>
+            <i class="fa-solid fa-circle-check"></i>
+          </button>
+        </div>
+
+        <!-- On-Screen Soft Keyboard -->
+        <div id="onscreen-keyboard" class="w-full max-w-2xl pt-2 border-t border-slate-100 space-y-2">
+          <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Tap letters or use your keyboard</p>
+          <div class="flex justify-center gap-1 sm:gap-1.5 flex-wrap" id="kb-row-1"></div>
+          <div class="flex justify-center gap-1 sm:gap-1.5 flex-wrap" id="kb-row-2"></div>
+          <div class="flex justify-center gap-1 sm:gap-1.5 flex-wrap" id="kb-row-3"></div>
+        </div>
+
+        <!-- Feedback Banner -->
+        <div id="feedback-banner" class="hidden w-full p-4 rounded-2xl font-display text-lg sm:text-xl text-center animate-pop-in">
+          <!-- Text dynamically set -->
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- SCREEN 3: LIST MANAGEMENT / CUSTOM WORDS -->
+    <div id="screen-lists" class="hidden space-y-6 animate-pop-in">
+      <div class="flex items-center justify-between">
+        <h2 class="font-display text-3xl text-purple-800">Spelling Word Lists</h2>
+        <button onclick="showScreen('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl text-sm transition">
+          <i class="fa-solid fa-house"></i> Home
+        </button>
+      </div>
+
+      <!-- Year Group Selection Bar inside lists -->
+      <div class="bg-purple-600 text-white rounded-3xl p-6 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <p class="text-xs text-amber-300 font-extrabold uppercase">School Year Level</p>
+          <h3 class="font-display text-2xl" id="list-year-title">Current Year: Year 3</h3>
+        </div>
+        <div class="flex items-center space-x-2 bg-white/10 p-2 rounded-2xl border border-white/20">
+          <label class="text-sm font-bold">Switch Year:</label>
+          <select onchange="changeYearGroup(this.value)" id="lists-screen-year-select" class="bg-white text-purple-900 font-display px-3 py-1.5 rounded-xl">
+            <option value="1">Year 1</option>
+            <option value="2">Year 2</option>
+            <option value="3">Year 3</option>
+            <option value="4">Year 4</option>
+            <option value="5">Year 5</option>
+            <option value="6">Year 6</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Built-In Statutory & School Term Lists -->
+      <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <h3 class="font-display text-xl text-slate-700 flex items-center gap-2">
+            <span>🇬🇧</span> Loaded Year Word Lists
+          </h3>
+          <span id="json-status-badge" class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-3 py-1 rounded-full">Loaded JSON Data</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="preset-lists-grid">
+          <!-- JS fills this -->
+        </div>
+      </div>
+
+      <!-- Add Custom Word List manually or via JSON Paste -->
+      <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-display text-xl text-purple-700 flex items-center gap-2">
+            <span>✍️</span> Add Weekly School Spelling List
+          </h3>
+          <button onclick="openAiPromptModal()" class="text-xs bg-purple-100 hover:bg-purple-200 text-purple-800 font-extrabold px-3 py-1.5 rounded-xl transition">
+            ✨ Get AI Prompt
+          </button>
+        </div>
+        <p class="text-sm text-slate-600 font-semibold">Enter custom words for this week's test (or paste generated JSON array):</p>
+
+        <div class="space-y-3">
+          <input type="text" id="custom-list-name" placeholder="List Title (e.g. Autumn Term - Week 4)" class="w-full px-4 py-3 rounded-xl border border-slate-300 font-bold focus:outline-none focus:border-purple-500">
+          <textarea id="custom-words-input" rows="3" placeholder="word1, word2, word3..." class="w-full px-4 py-3 rounded-xl border border-slate-300 font-bold focus:outline-none focus:border-purple-500"></textarea>
+          
+          <button onclick="saveCustomWordList()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-display px-6 py-3 rounded-xl shadow-md transition flex items-center space-x-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Save List</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom Lists List -->
+      <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200 space-y-4">
+        <h3 class="font-display text-xl text-slate-700">Your Saved Custom Lists</h3>
+        <div id="custom-lists-container" class="space-y-3">
+          <!-- JS fills custom lists or empty message -->
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SCREEN 4: GAME OVER / SUMMARY -->
+    <div id="screen-summary" class="hidden space-y-6 text-center animate-pop-in">
+      <div class="bg-white rounded-3xl p-8 shadow-2xl border-4 border-amber-300 max-w-xl mx-auto space-y-6">
+        
+        <div class="text-7xl animate-bounce-gentle">
+          🎉
+        </div>
+
+        <h2 class="font-display text-4xl text-purple-700">Superstar Practice Done!</h2>
+        <p class="text-slate-600 font-extrabold text-lg">Great job on your spelling power!</p>
+
+        <!-- Stats Breakdown -->
+        <div class="grid grid-cols-3 gap-3 bg-purple-50 p-4 rounded-2xl border border-purple-100">
+          <div>
+            <p class="text-xs text-slate-400 font-extrabold uppercase">Correct</p>
+            <p id="summary-correct" class="font-display text-2xl text-emerald-600">0</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-extrabold uppercase">Stars Won</p>
+            <p id="summary-stars" class="font-display text-2xl text-amber-500">0⭐</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-extrabold uppercase">Accuracy</p>
+            <p id="summary-accuracy" class="font-display text-2xl text-blue-600">100%</p>
+          </div>
+        </div>
+
+        <div class="space-y-3 pt-2">
+          <button onclick="startCurrentModeAgain()" class="action-btn w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-display text-xl py-3.5 rounded-2xl shadow-lg">
+            Play Again 🔄
+          </button>
+          <button onclick="showScreen('home')" class="action-btn w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-display text-lg py-3 rounded-2xl">
+            Return to Home 🏠
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- AI PROMPT HELPER MODAL -->
+  <div id="modal-ai-prompt" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border-4 border-purple-200">
+      
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="font-display text-2xl text-purple-800 flex items-center gap-2">
+          <span>🤖</span> AI Prompt Helper for Word Lists
+        </h3>
+        <button onclick="closeAiPromptModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <p class="text-sm text-slate-600 font-semibold leading-relaxed">
+        Copy the prompt below and paste it into <b>ChatGPT, Gemini, or Claude</b> along with your child's weekly school spelling sheet to instantly generate formatted JSON for this app!
+      </p>
+
+      <div class="relative bg-slate-900 text-slate-200 p-4 rounded-2xl font-mono text-xs overflow-x-auto border border-slate-800">
+        <pre id="prompt-text-code" class="whitespace-pre-wrap select-all">Please convert the following school spelling list into a JSON list object for a UK Primary School child spelling app. 
+
+Return ONLY valid raw JSON in this format:
+{
+  "lists": [
+    {
+      "id": "week_1",
+      "title": "Autumn Term - Week 1",
+      "words": [
+        {
+          "word": "accident",
+          "hint": "An unexpected event",
+          "emoji": "🚗",
+          "sentence": "She had an ___ with her juice."
+        }
+      ]
+    }
+  ]
+}
+
+Here is my school spelling list:
+[PASTE YOUR SCHOOL WORDS HERE]</pre>
+      </div>
+
+      <div class="flex justify-between items-center pt-2">
+        <button onclick="copyAiPromptText()" id="copy-prompt-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-display px-5 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+          <i class="fa-solid fa-copy"></i>
+          <span>Copy Prompt to Clipboard</span>
+        </button>
+        <button onclick="closeAiPromptModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-sm">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer class="text-center text-xs text-slate-400 font-bold py-4">
+    Spelling Superstars UK • Supporting Primary Curriculum Years 1 to 6
+  </footer>
+
+
+  <!-- JAVASCRIPT APP ENGINE -->
+  <script>
+    /* ====================================================================
+       DEFAULT LOCAL WORD DATASETS (FALLBACKS IF EXTERNAL JSON NOT FOUND)
+       ==================================================================== */
+    const DEFAULT_YEAR_DATASETS = {
+      1: {
+        lists: [
+          {
+            id: 'y1_statutory',
+            title: 'Year 1 Common Exception Words',
+            words: [
+              { word: 'the', hint: 'Definite article', emoji: '👈', sentence: '___ dog barked loudly.' },
+              { word: 'they', hint: 'Group of people', emoji: '👥', sentence: '___ are playing in the garden.' },
+              { word: 'said', hint: 'Spoke words', emoji: '💬', sentence: 'He ___ hello to his teacher.' },
+              { word: 'have', hint: 'To possess something', emoji: '🎁', sentence: 'I ___ a new shiny bicycle.' },
+              { word: 'like', hint: 'To enjoy something', emoji: '❤️', sentence: 'Cats ___ to sleep in the sun.' },
+              { word: 'some', hint: 'An unspecified amount', emoji: '🍎', sentence: 'Would you like ___ apples?' },
+              { word: 'come', hint: 'Move towards here', emoji: '🚶', sentence: 'Please ___ inside for dinner.' },
+              { word: 'there', hint: 'In that place', emoji: '📍', sentence: 'The book is over ___.' },
+              { word: 'one', hint: 'The number 1', emoji: '1️⃣', sentence: 'I have ___ sister.' },
+              { word: 'house', hint: 'A building to live in', emoji: '🏠', sentence: 'Our ___ has a red door.' }
+            ]
+          }
+        ]
+      },
+      2: {
+        lists: [
+          {
+            id: 'y2_statutory',
+            title: 'Year 2 Common Exception Words',
+            words: [
+              { word: 'because', hint: 'Gives a reason for something', emoji: '💡', sentence: 'I stayed inside ___ it was raining.' },
+              { word: 'child', hint: 'A young person', emoji: '🧒', sentence: 'The ___ played happily.' },
+              { word: 'children', hint: 'More than one child', emoji: '👭', sentence: 'All the ___ sang a song.' },
+              { word: 'every', hint: 'All of them', emoji: '⭐', sentence: '___ student tried their best.' },
+              { word: 'father', hint: 'A male parent', emoji: '👨', sentence: 'My ___ made delicious soup.' },
+              { word: 'mother', hint: 'A female parent', emoji: '👩', sentence: 'Her ___ helped with homework.' },
+              { word: 'pretty', hint: 'Attractive or nice to look at', emoji: '🌸', sentence: 'The garden has ___ flowers.' },
+              { word: 'water', hint: 'Clear liquid we drink', emoji: '💧', sentence: 'Drink a glass of fresh ___.' },
+              { word: 'would', hint: 'Expresses future requirement', emoji: '❓', sentence: '___ you like a cookie?' },
+              { word: 'plant', hint: 'Grows in garden soil', emoji: '🪴', sentence: 'Water the green ___ every morning.' }
+            ]
+          }
+        ]
+      },
+      3: {
+        lists: [
+          {
+            id: 'y3_set_a',
+            title: 'Year 3 Statutory Words (Set A)',
+            words: [
+              { word: 'accident', hint: 'An unexpected event', emoji: '🚗', sentence: 'She had an ___ with her orange juice.' },
+              { word: 'actual', hint: 'Real or exact', emoji: '💯', sentence: 'Is that the ___ answer?' },
+              { word: 'address', hint: 'Where someone lives', emoji: '🏠', sentence: 'Write your home ___ on the envelope.' },
+              { word: 'answer', hint: 'A response to a question', emoji: '❓', sentence: 'Raise your hand if you know the ___.' },
+              { word: 'appear', hint: 'To come into view', emoji: '🪄', sentence: 'The magician made a rabbit ___.' },
+              { word: 'arrive', hint: 'To reach a place', emoji: '🛬', sentence: 'What time will the train ___?' },
+              { word: 'believe', hint: 'To accept as true', emoji: '🌟', sentence: 'I ___ you can achieve anything!' },
+              { word: 'bicycle', hint: 'A two-wheeled vehicle', emoji: '🚲', sentence: 'He loves riding his ___ in the park.' },
+              { word: 'breath', hint: 'Air taken into lungs', emoji: '💨', sentence: 'Take a deep ___ before speaking.' },
+              { word: 'breathe', hint: 'To inhale and exhale', emoji: '🫁', sentence: 'It is easy to ___ fresh air outside.' }
+            ]
+          },
+          {
+            id: 'y3_set_b',
+            title: 'Year 3 Statutory Words (Set B)',
+            words: [
+              { word: 'build', hint: 'To construct something', emoji: '🏗️', sentence: 'We will ___ a giant LEGO tower.' },
+              { word: 'busy', hint: 'Having a lot to do', emoji: '🐝', sentence: 'The bumblebee is very ___ collecting pollen.' },
+              { word: 'calendar', hint: 'Shows days and months', emoji: '📅', sentence: 'Check the ___ for the party date.' },
+              { word: 'caught', hint: 'Past tense of catch', emoji: '🎣', sentence: 'He ___ the ball with one hand.' },
+              { word: 'centre', hint: 'The middle point', emoji: '🎯', sentence: 'Stand right in the ___ of the circle.' },
+              { word: 'century', hint: 'A period of 100 years', emoji: '⏳', sentence: 'A ___ is one hundred years long.' },
+              { word: 'circle', hint: 'A round flat shape', emoji: '⭕', sentence: 'Draw a round ___ on the paper.' },
+              { word: 'complete', hint: 'Finished or whole', emoji: '🧩', sentence: 'I need one more piece to ___ the puzzle.' },
+              { word: 'decide', hint: 'To make a choice', emoji: '🧭', sentence: 'I cannot ___ which ice cream to choose.' },
+              { word: 'different', hint: 'Not the same', emoji: '🎨', sentence: 'Each snowflake is ___.' }
+            ]
+          }
+        ]
+      },
+      4: {
+        lists: [
+          {
+            id: 'y4_statutory',
+            title: 'Year 4 Statutory Words',
+            words: [
+              { word: 'experiment', hint: 'A test to learn science', emoji: '🧪', sentence: 'We made a volcano in our science ___.' },
+              { word: 'favourite', hint: 'Liked more than others', emoji: '❤️', sentence: 'Pizza is my ___ food.' },
+              { word: 'February', hint: 'The second month of the year', emoji: '❄️', sentence: 'Valentine\'s Day is in ___.' },
+              { word: 'grammar', hint: 'Rules of language', emoji: '📝', sentence: 'Check your punctuation and ___.' },
+              { word: 'group', hint: 'A collection of things', emoji: '👥', sentence: 'Work together in your table ___.' },
+              { word: 'guard', hint: 'To protect or keep safe', emoji: '🛡️', sentence: 'The knight will ___ the castle.' },
+              { word: 'guide', hint: 'To show the way', emoji: '🗺️', sentence: 'The compass will ___ us home.' },
+              { word: 'island', hint: 'Land surrounded by water', emoji: '🏝️', sentence: 'Pirates sailed to the tropical ___.' },
+              { word: 'knowledge', hint: 'Facts and learning', emoji: '🧠', sentence: 'Reading books increases your ___.' },
+              { word: 'material', hint: 'Substance things are made from', emoji: '🧱', sentence: 'Wood is a natural ___.' }
+            ]
+          }
+        ]
+      },
+      5: {
+        lists: [
+          {
+            id: 'y5_statutory',
+            title: 'Year 5 Statutory Words',
+            words: [
+              { word: 'accommodate', hint: 'Provide space or room for', emoji: '🏨', sentence: 'The hotel can ___ 200 guests.' },
+              { word: 'ancient', hint: 'From a very long time ago', emoji: '🏛️', sentence: 'They studied ___ Egyptian tombs.' },
+              { word: 'apparent', hint: 'Clearly visible or understood', emoji: '🔍', sentence: 'It became ___ that it would rain.' },
+              { word: 'category', hint: 'A class or group of things', emoji: '📁', sentence: 'Place apples in the fruit ___.' },
+              { word: 'cemetery', hint: 'A place where graves are', emoji: '🪦', sentence: 'The ancient castle sat near the old ___.' },
+              { word: 'committee', hint: 'Group appointed for a task', emoji: '📋', sentence: 'The school council ___ met today.' },
+              { word: 'definitely', hint: 'Without a doubt', emoji: '✅', sentence: 'I will ___ come to your party!' },
+              { word: 'embarrass', hint: 'Cause to feel self-conscious', emoji: '😳', sentence: 'Try not to ___ your brother.' },
+              { word: 'frequently', hint: 'Happening often', emoji: '🔄', sentence: 'He ___ practices his piano.' },
+              { word: 'guarantee', hint: 'A formal promise', emoji: '📜', sentence: 'The tool comes with a lifetime ___.' }
+            ]
+          }
+        ]
+      },
+      6: {
+        lists: [
+          {
+            id: 'y6_statutory',
+            title: 'Year 6 Statutory Words',
+            words: [
+              { word: 'mischievous', hint: 'Causing playful trouble', emoji: '🐒', sentence: 'The ___ monkey stole a banana.' },
+              { word: 'necessary', hint: 'Needed or required', emoji: '🔑', sentence: 'Water is ___ for plant growth.' },
+              { word: 'neighbour', hint: 'Person living next door', emoji: '🏡', sentence: 'Our ___ helped paint the fence.' },
+              { word: 'opportunity', hint: 'A good chance for progress', emoji: '🚀', sentence: 'Gasping for the ___ to shine.' },
+              { word: 'persuade', hint: 'Convince someone to do something', emoji: '🗣️', sentence: 'She tried to ___ him to join.' },
+              { word: 'queue', hint: 'Line of waiting people', emoji: '🚶‍♂️', sentence: 'Wait in the lunch ___ politely.' },
+              { word: 'rhythm', hint: 'A regular repeated pattern sound', emoji: '🥁', sentence: 'Clap along with the musical ___.' },
+              { word: 'sincere', hint: 'Genuine and honest feelings', emoji: '💖', sentence: 'He offered a ___ apology.' },
+              { word: 'thorough', hint: 'Complete and with great care', emoji: '🔎', sentence: 'Conduct a ___ search for clues.' },
+              { word: 'vegetable', hint: 'Edible plant part', emoji: '🥦', sentence: 'Broccoli is a healthy green ___.' }
+            ]
+          }
+        ]
+      }
+    };
+
+
+    /* ====================================================================
+       GLOBAL APP STATE
+       ==================================================================== */
+    let appState = {
+      selectedYear: parseInt(localStorage.getItem('spelling_year') || '3'),
+      stars: parseInt(localStorage.getItem('spelling_stars') || '0'),
+      streak: parseInt(localStorage.getItem('spelling_streak') || '0'),
+      customLists: JSON.parse(localStorage.getItem('spelling_custom_lists') || '[]'),
+      badges: JSON.parse(localStorage.getItem('spelling_badges') || '[]'),
+      
+      yearData: null, // Dynamic fetched or fallback year JSON data
+      activeListKey: '',
+      activeWords: [],
+      currentMode: 'listen', // 'listen', 'blanks', 'rocket'
+      currentIndex: 0,
+      score: 0,
+      
+      // Rocket Game Specifics
+      rocketStage: 0, // 0 to 5 stages
+      targetWord: '',
+      guessedLetters: new Set(),
+      audioCtx: null
+    };
+
+    const ALL_BADGES = [
+      { id: 'first_star', title: 'First Star', emoji: '⭐', desc: 'Earn your 1st star' },
+      { id: 'streak_5', title: 'High Five', emoji: '🖐️', desc: 'Get 5 words in a row' },
+      { id: 'rocket_master', title: 'Space Cadet', emoji: '🚀', desc: 'Complete Rocket Launch mode' },
+      { id: 'spelling_bee', title: 'Bee Champ', emoji: '🐝', desc: 'Reach 20 total stars' }
+    ];
+
+    const KB_ROWS = [
+      ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+      ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
+    ];
+
+    /* ====================================================================
+       DYNAMIC JSON FETCHING (year1.json - year6.json)
+       ==================================================================== */
+    async function loadYearGroupData(yearNum) {
+      appState.selectedYear = yearNum;
+      localStorage.setItem('spelling_year', yearNum);
+
+      // Update UI Dropdowns
+      document.getElementById('year-selector').value = yearNum;
+      document.getElementById('lists-screen-year-select').value = yearNum;
+      document.getElementById('banner-year-tag').textContent = `Year ${yearNum} Primary School`;
+      document.getElementById('active-year-label').textContent = `Year ${yearNum}`;
+      document.getElementById('list-year-title').textContent = `Current Year: Year ${yearNum}`;
+
+      const badge = document.getElementById('json-status-badge');
+
+      try {
+        // Try fetching dynamic JSON file from server/GitHub Pages
+        const response = await fetch(`year${yearNum}.json`);
+        if (!response.ok) throw new Error('JSON file not found');
+        
+        const data = await response.json();
+        appState.yearData = data;
+        badge.textContent = `External year${yearNum}.json`;
+        badge.className = "bg-emerald-100 text-emerald-800 font-extrabold text-xs px-3 py-1 rounded-full border border-emerald-300";
+      } catch (err) {
+        // Fallback to local embedded dataset
+        console.log(`Using fallback dataset for Year ${yearNum}:`, err.message);
+        appState.yearData = DEFAULT_YEAR_DATASETS[yearNum] || DEFAULT_YEAR_DATASETS[3];
+        badge.textContent = `Built-in Year ${yearNum} Dataset`;
+        badge.className = "bg-purple-100 text-purple-800 font-extrabold text-xs px-3 py-1 rounded-full border border-purple-300";
+      }
+
+      // Default active list to first available
+      if (appState.yearData && appState.yearData.lists && appState.yearData.lists.length > 0) {
+        appState.activeListKey = appState.yearData.lists[0].id;
+      }
+
+      updateHeaderStats();
+    }
+
+    async function changeYearGroup(yearNum) {
+      await loadYearGroupData(parseInt(yearNum));
+      if (!document.getElementById('screen-lists').classList.contains('hidden')) {
+        renderWordListsScreen();
+      }
+    }
+
+
+    /* ====================================================================
+       SOUND SYNTHESIS (Web Audio API)
+       ==================================================================== */
+    function initAudio() {
+      if (!appState.audioCtx) {
+        appState.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (appState.audioCtx.state === 'suspended') {
+        appState.audioCtx.resume();
+      }
+    }
+
+    function playSound(type) {
+      initAudio();
+      if (!appState.audioCtx) return;
+
+      const ctx = appState.audioCtx;
+      const now = ctx.currentTime;
+
+      if (type === 'correct') {
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = 'triangle';
+        osc2.type = 'sine';
+
+        osc1.frequency.setValueAtTime(523.25, now);
+        osc1.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+        osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+        osc1.frequency.exponentialRampToValueAtTime(1046.50, now + 0.3);
+
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.5);
+        osc2.stop(now + 0.5);
+
+      } else if (type === 'wrong') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.25);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+
+      } else if (type === 'pop') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+
+      } else if (type === 'assembly') {
+        // Heavy metallic clunk + chime for rocket part attached
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+
+      } else if (type === 'launch') {
+        // Deep rumble engine roar
+        const bufferSize = ctx.sampleRate * 2;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(300, now);
+        filter.frequency.linearRampToValueAtTime(800, now + 1.5);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 2.0);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        noise.start(now);
+        noise.stop(now + 2.0);
+      }
+    }
+
+
+    /* ====================================================================
+       SPEECH SYNTHESIS (UK British Voice)
+       ==================================================================== */
+    function speakCurrentWord(rate = 1.0) {
+      if (!('speechSynthesis' in window)) return;
+
+      window.speechSynthesis.cancel();
+      const current = appState.activeWords[appState.currentIndex];
+      if (!current) return;
+
+      const utterance = new SpeechSynthesisUtterance(current.word);
+      utterance.rate = rate;
+
+      const voices = window.speechSynthesis.getVoices();
+      const ukVoice = voices.find(v => v.lang === 'en-GB' || v.lang.includes('GB') || v.name.includes('UK') || v.name.includes('British'));
+      if (ukVoice) {
+        utterance.voice = ukVoice;
+      } else {
+        utterance.lang = 'en-GB';
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+
+    /* ====================================================================
+       UI & SCREEN NAVIGATION
+       ==================================================================== */
+    function showScreen(screenId) {
+      document.getElementById('screen-home').classList.add('hidden');
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-lists').classList.add('hidden');
+      document.getElementById('screen-summary').classList.add('hidden');
+
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) target.classList.remove('hidden');
+
+      if (screenId === 'home') {
+        renderBadges();
+        updateHeaderStats();
+      } else if (screenId === 'lists') {
+        renderWordListsScreen();
+      }
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('stat-stars').textContent = appState.stars;
+      document.getElementById('stat-streak').textContent = appState.streak;
+
+      let title = "Custom List";
+      if (appState.yearData && appState.yearData.lists) {
+        const found = appState.yearData.lists.find(l => l.id === appState.activeListKey);
+        if (found) title = found.title;
+      }
+      if (title === "Custom List") {
+        const custom = appState.customLists.find(l => l.id === appState.activeListKey);
+        if (custom) title = custom.title;
+      }
+
+      document.getElementById('current-list-title').textContent = title;
+
+      localStorage.setItem('spelling_stars', appState.stars);
+      localStorage.setItem('spelling_streak', appState.streak);
+      localStorage.setItem('spelling_badges', JSON.stringify(appState.badges));
+    }
+
+    function renderBadges() {
+      const container = document.getElementById('badges-container');
+      container.innerHTML = '';
+
+      ALL_BADGES.forEach(badge => {
+        const unlocked = appState.badges.includes(badge.id);
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-2xl border text-center transition flex flex-col items-center justify-center space-y-1 ${
+          unlocked ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-sm' : 'bg-slate-100 border-slate-200 text-slate-400 opacity-60'
+        }`;
+        card.innerHTML = `
+          <div class="text-3xl">${badge.emoji}</div>
+          <p class="font-display text-sm leading-tight">${badge.title}</p>
+          <p class="text-[10px] font-bold text-slate-500">${badge.desc}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function unlockBadge(badgeId) {
+      if (!appState.badges.includes(badgeId)) {
+        appState.badges.push(badgeId);
+        renderBadges();
+      }
+    }
+
+
+    /* ====================================================================
+       WORD LIST MANAGERS
+       ==================================================================== */
+    function getActiveWordList() {
+      if (appState.yearData && appState.yearData.lists) {
+        const found = appState.yearData.lists.find(l => l.id === appState.activeListKey);
+        if (found) return found.words;
+      }
+      const custom = appState.customLists.find(l => l.id === appState.activeListKey);
+      if (custom) return custom.words;
+
+      return DEFAULT_YEAR_DATASETS[3].lists[0].words;
+    }
+
+    function renderWordListsScreen() {
+      const presetsContainer = document.getElementById('preset-lists-grid');
+      presetsContainer.innerHTML = '';
+
+      if (appState.yearData && appState.yearData.lists) {
+        appState.yearData.lists.forEach(bank => {
+          const isSelected = appState.activeListKey === bank.id;
+          const btn = document.createElement('div');
+          btn.className = `p-4 rounded-2xl border-2 text-left cursor-pointer transition ${
+            isSelected ? 'border-purple-600 bg-purple-50 ring-2 ring-purple-300' : 'border-slate-200 bg-slate-50 hover:border-purple-300'
+          }`;
+          btn.onclick = () => {
+            appState.activeListKey = bank.id;
+            renderWordListsScreen();
+            updateHeaderStats();
+          };
+          btn.innerHTML = `
+            <p class="font-display text-purple-800 text-lg">${bank.title}</p>
+            <p class="text-xs text-slate-500 font-bold mt-1">${bank.words.length} words included</p>
+          `;
+          presetsContainer.appendChild(btn);
+        });
+      }
+
+      const customContainer = document.getElementById('custom-lists-container');
+      customContainer.innerHTML = '';
+
+      if (appState.customLists.length === 0) {
+        customContainer.innerHTML = `<p class="text-slate-400 font-semibold italic text-sm">No custom lists saved yet. Create one above!</p>`;
+      } else {
+        appState.customLists.forEach(list => {
+          const isSelected = appState.activeListKey === list.id;
+          const div = document.createElement('div');
+          div.className = `p-4 rounded-2xl border-2 flex items-center justify-between ${
+            isSelected ? 'border-purple-600 bg-purple-50' : 'border-slate-200 bg-slate-50'
+          }`;
+          div.innerHTML = `
+            <div class="cursor-pointer flex-grow" onclick="selectCustomList('${list.id}')">
+              <p class="font-display text-purple-800 text-lg">${list.title}</p>
+              <p class="text-xs text-slate-500 font-bold">${list.words.length} words</p>
+            </div>
+            <button onclick="deleteCustomList('${list.id}')" class="text-red-400 hover:text-red-600 p-2 text-lg">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          `;
+          customContainer.appendChild(div);
+        });
+      }
+    }
+
+    function selectCustomList(id) {
+      appState.activeListKey = id;
+      renderWordListsScreen();
+      updateHeaderStats();
+    }
+
+    function saveCustomWordList() {
+      const nameInput = document.getElementById('custom-list-name');
+      const wordsInput = document.getElementById('custom-words-input');
+
+      const name = nameInput.value.trim() || 'Custom Spelling List';
+      const rawText = wordsInput.value.trim();
+
+      if (!rawText) {
+        alert("Please enter some spelling words or paste a JSON list!");
+        return;
+      }
+
+      let formattedWords = [];
+
+      // Check if user pasted JSON array
+      if (rawText.startsWith('{') || rawText.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(rawText);
+          const listArr = Array.isArray(parsed) ? parsed : (parsed.words || parsed.lists?.[0]?.words || []);
+          formattedWords = listArr.map(w => ({
+            word: w.word.toLowerCase(),
+            hint: w.hint || 'Custom word',
+            emoji: w.emoji || '📝',
+            sentence: w.sentence || `The word is "${w.word}".`
+          }));
+        } catch (e) {
+          alert("Invalid JSON pasted. Trying standard comma-separated text instead.");
+        }
+      }
+
+      if (formattedWords.length === 0) {
+        const wordArr = rawText.split(/[\s,]+/).filter(w => w.length > 0).map(w => w.toLowerCase());
+        formattedWords = wordArr.map(w => ({
+          word: w,
+          hint: 'Custom word',
+          emoji: '📝',
+          sentence: `The word is "${w}".`
+        }));
+      }
+
+      const newList = {
+        id: 'custom_' + Date.now(),
+        title: name,
+        words: formattedWords
+      };
+
+      appState.customLists.push(newList);
+      localStorage.setItem('spelling_custom_lists', JSON.stringify(appState.customLists));
+      
+      appState.activeListKey = newList.id;
+      nameInput.value = '';
+      wordsInput.value = '';
+
+      renderWordListsScreen();
+      updateHeaderStats();
+    }
+
+    function deleteCustomList(id) {
+      appState.customLists = appState.customLists.filter(l => l.id !== id);
+      localStorage.setItem('spelling_custom_lists', JSON.stringify(appState.customLists));
+      if (appState.activeListKey === id) {
+        appState.activeListKey = appState.yearData?.lists?.[0]?.id || 'y3_set_a';
+      }
+      renderWordListsScreen();
+      updateHeaderStats();
+    }
+
+
+    /* ====================================================================
+       AI PROMPT MODAL FUNCTIONS
+       ==================================================================== */
+    function openAiPromptModal() {
+      document.getElementById('modal-ai-prompt').classList.remove('hidden');
+    }
+
+    function closeAiPromptModal() {
+      document.getElementById('modal-ai-prompt').classList.add('hidden');
+    }
+
+    function copyAiPromptText() {
+      const codeText = document.getElementById('prompt-text-code').innerText;
+      
+      // Fallback copy execCommand for iframe compatibility
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = codeText;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      const btn = document.getElementById('copy-prompt-btn');
+      btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Copied Prompt!</span>`;
+      btn.classList.replace('bg-purple-600', 'bg-emerald-600');
+      
+      setTimeout(() => {
+        btn.innerHTML = `<i class="fa-solid fa-copy"></i> <span>Copy Prompt to Clipboard</span>`;
+        btn.classList.replace('bg-emerald-600', 'bg-purple-600');
+      }, 2000);
+    }
+
+
+    /* ====================================================================
+       GAME ENGINE & ROCKET MECHANICS
+       ==================================================================== */
+    function startMode(mode) {
+      initAudio();
+      appState.currentMode = mode;
+      appState.currentIndex = 0;
+      appState.score = 0;
+      appState.rocketStage = 0;
+
+      const list = getActiveWordList();
+      appState.activeWords = [...list].sort(() => Math.random() - 0.5);
+
+      showScreen('game');
+      setupOnscreenKeyboard();
+      resetRocketSvgState();
+      loadCurrentWord();
+    }
+
+    function startCurrentModeAgain() {
+      startMode(appState.currentMode);
+    }
+
+    function loadCurrentWord() {
+      const wordObj = appState.activeWords[appState.currentIndex];
+      if (!wordObj) {
+        finishGame();
+        return;
+      }
+
+      appState.targetWord = wordObj.word.toLowerCase();
+      appState.guessedLetters.clear();
+
+      document.getElementById('game-score').textContent = appState.score;
+      document.getElementById('game-progress-text').textContent = `Word ${appState.currentIndex + 1} of ${appState.activeWords.length}`;
+      
+      const titles = {
+        'listen': '🎧 Listen & Type',
+        'blanks': '🧩 Fill in Missing Letters',
+        'rocket': '🚀 Rocket Launch Builder'
+      };
+      document.getElementById('game-mode-title').textContent = titles[appState.currentMode] || 'Spelling Practice';
+
+      document.getElementById('game-emoji-hint').textContent = wordObj.emoji || '✨';
+      
+      let displaySentence = wordObj.sentence;
+      if (appState.currentMode === 'listen') {
+        const regex = new RegExp(wordObj.word, 'gi');
+        displaySentence = displaySentence.replace(regex, '_______');
+      }
+      document.getElementById('game-sentence-hint').textContent = `"${displaySentence}"`;
+
+      const audioCtrls = document.getElementById('audio-controls');
+      const directInput = document.getElementById('direct-input-container');
+      const rocketArea = document.getElementById('rocket-visual-area');
+      const feedbackBanner = document.getElementById('feedback-banner');
+      feedbackBanner.classList.add('hidden');
+
+      if (appState.currentMode === 'listen') {
+        audioCtrls.classList.remove('hidden');
+        directInput.classList.remove('hidden');
+        rocketArea.classList.add('hidden');
+        
+        const typeInput = document.getElementById('type-input');
+        typeInput.value = '';
+        setTimeout(() => typeInput.focus(), 200);
+
+        renderWordBoxes(true);
+        setTimeout(() => speakCurrentWord(1.0), 300);
+
+      } else if (appState.currentMode === 'blanks') {
+        audioCtrls.classList.remove('hidden');
+        directInput.classList.add('hidden');
+        rocketArea.classList.add('hidden');
+
+        generateBlanksMask();
+        renderWordBoxes();
+
+      } else if (appState.currentMode === 'rocket') {
+        audioCtrls.classList.remove('hidden');
+        directInput.classList.add('hidden');
+        rocketArea.classList.remove('hidden');
+
+        updateRocketStageUI();
+        renderWordBoxes();
+      }
+
+      refreshKeyboardStates();
+    }
+
+
+    /* Rocket Visual Stage Handlers */
+    const ROCKET_PART_IDS = [
+      'part-thruster',
+      'part-body',
+      'part-fins',
+      'part-cockpit',
+      'part-nose'
+    ];
+
+    const ROCKET_STAGE_NAMES = [
+      'Stage 1: Rocket Engine Thrusters',
+      'Stage 2: Main Fuel Tank Body',
+      'Stage 3: Aerodynamic Side Fins',
+      'Stage 4: Command Cockpit Window',
+      'Stage 5: Nose Cone & Launch Ready!'
+    ];
+
+    function resetRocketSvgState() {
+      ROCKET_PART_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.className.baseVal = "rocket-part rocket-part-hidden";
+        }
+      });
+      document.getElementById('rocket-svg').style.transform = "translateY(0) scale(1)";
+      document.getElementById('rocket-fire-effect').classList.add('hidden');
+      document.getElementById('rocket-countdown-overlay').classList.add('hidden');
+    }
+
+    function assembleNextRocketPart() {
+      if (appState.rocketStage < 5) {
+        const partId = ROCKET_PART_IDS[appState.rocketStage];
+        const el = document.getElementById(partId);
+        if (el) {
+          el.className.baseVal = "rocket-part rocket-part-assembled";
+        }
+        playSound('assembly');
+        appState.rocketStage++;
+        updateRocketStageUI();
+      }
+    }
+
+    function updateRocketStageUI() {
+      const stageNum = Math.min(appState.rocketStage + 1, 5);
+      document.getElementById('rocket-stage-num').textContent = stageNum;
+      document.getElementById('rocket-stage-name').textContent = ROCKET_STAGE_NAMES[stageNum - 1];
+
+      // Update dots indicator
+      const dotsContainer = document.getElementById('rocket-dots');
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        const dot = document.createElement('span');
+        if (i < appState.rocketStage) {
+          dot.className = "w-3.5 h-3.5 rounded-full bg-amber-400 border border-amber-200 shadow-md";
+        } else {
+          dot.className = "w-3.5 h-3.5 rounded-full bg-slate-800 border border-slate-600";
+        }
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function triggerRocketLaunchSequence() {
+      playSound('launch');
+      const fire = document.getElementById('rocket-fire-effect');
+      const svg = document.getElementById('rocket-svg');
+      const countdown = document.getElementById('rocket-countdown-overlay');
+
+      countdown.classList.remove('hidden');
+      fire.classList.remove('hidden');
+
+      svg.classList.add('animate-rocket-launch');
+
+      confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+    }
+
+
+    /* Missing Letters Mask Generator */
+    let blanksMissingIndices = new Set();
+    function generateBlanksMask() {
+      blanksMissingIndices.clear();
+      const len = appState.targetWord.length;
+      let countToHide = Math.max(1, Math.floor(len * 0.4));
+      
+      while (blanksMissingIndices.size < countToHide) {
+        let idx = Math.floor(Math.random() * len);
+        blanksMissingIndices.add(idx);
+      }
+    }
+
+    /* Render Box letters */
+    function renderWordBoxes(allHidden = false) {
+      const container = document.getElementById('word-letters-container');
+      container.innerHTML = '';
+
+      const word = appState.targetWord;
+
+      for (let i = 0; i < word.length; i++) {
+        const char = word[i];
+        const box = document.createElement('div');
+        box.className = "w-11 h-13 sm:w-14 sm:h-16 rounded-2xl border-3 flex items-center justify-center font-display text-2xl sm:text-3xl uppercase shadow-md transition-all";
+
+        if (appState.currentMode === 'listen') {
+          box.classList.add('border-purple-200', 'bg-purple-50', 'text-purple-800');
+          box.textContent = '';
+
+        } else if (appState.currentMode === 'blanks') {
+          if (blanksMissingIndices.has(i)) {
+            if (appState.guessedLetters.has(char)) {
+              box.classList.add('border-emerald-400', 'bg-emerald-50', 'text-emerald-700', 'animate-pop-in');
+              box.textContent = char;
+            } else {
+              box.classList.add('border-amber-400', 'bg-amber-50', 'text-amber-800');
+              box.textContent = '_';
+            }
+          } else {
+            box.classList.add('border-slate-300', 'bg-slate-100', 'text-slate-600');
+            box.textContent = char;
+          }
+
+        } else if (appState.currentMode === 'rocket') {
+          if (appState.guessedLetters.has(char)) {
+            box.classList.add('border-purple-400', 'bg-purple-50', 'text-purple-800', 'animate-pop-in');
+            box.textContent = char;
+          } else {
+            box.classList.add('border-indigo-300', 'bg-slate-50', 'text-transparent');
+            box.textContent = '_';
+          }
+        }
+
+        container.appendChild(box);
+      }
+    }
+
+
+    /* On-Screen Keyboard Setup */
+    function setupOnscreenKeyboard() {
+      const rows = [KB_ROWS[0], KB_ROWS[1], KB_ROWS[2]];
+      rows.forEach((row, idx) => {
+        const container = document.getElementById(`kb-row-${idx + 1}`);
+        container.innerHTML = '';
+
+        row.forEach(letter => {
+          const btn = document.createElement('button');
+          btn.dataset.letter = letter.toLowerCase();
+          btn.className = "key-btn bg-white hover:bg-slate-100 text-purple-900 font-display text-base sm:text-xl w-8 h-10 sm:w-11 sm:h-12 rounded-xl border border-slate-300 flex items-center justify-center uppercase";
+          btn.textContent = letter;
+          btn.onclick = () => handleVirtualKeyPress(letter.toLowerCase());
+          container.appendChild(btn);
+        });
+      });
+    }
+
+    function refreshKeyboardStates() {
+      const buttons = document.querySelectorAll('.key-btn');
+      buttons.forEach(btn => {
+        const char = btn.dataset.letter;
+        btn.disabled = false;
+        btn.className = "key-btn bg-white hover:bg-slate-100 text-purple-900 font-display text-base sm:text-xl w-8 h-10 sm:w-11 sm:h-12 rounded-xl border border-slate-300 flex items-center justify-center uppercase";
+
+        if (appState.guessedLetters.has(char)) {
+          if (appState.targetWord.includes(char)) {
+            btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+            btn.classList.remove('bg-white', 'text-purple-900');
+          } else {
+            btn.classList.add('bg-slate-300', 'text-slate-500', 'border-slate-400', 'opacity-50');
+            btn.classList.remove('bg-white', 'text-purple-900');
+            btn.disabled = true;
+          }
+        }
+      });
+    }
+
+    function handleVirtualKeyPress(char) {
+      playSound('pop');
+
+      if (appState.currentMode === 'listen') {
+        const input = document.getElementById('type-input');
+        input.value += char;
+        return;
+      }
+
+      if (appState.guessedLetters.has(char)) return;
+      appState.guessedLetters.add(char);
+
+      if (appState.currentMode === 'blanks') {
+        renderWordBoxes();
+        refreshKeyboardStates();
+        checkBlanksWordComplete();
+
+      } else if (appState.currentMode === 'rocket') {
+        renderWordBoxes();
+        refreshKeyboardStates();
+        checkRocketWordComplete();
+      }
+    }
+
+
+    /* Real Keyboard Event Listener */
+    window.addEventListener('keydown', (e) => {
+      const activeElement = document.activeElement;
+      if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+        if (e.key === 'Enter' && activeElement.id === 'type-input') {
+          checkAnswer();
+        }
+        return;
+      }
+
+      if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+        handleVirtualKeyPress(e.key.toLowerCase());
+      }
+    });
+
+
+    /* Check Answers & Progress */
+    function checkAnswer() {
+      const input = document.getElementById('type-input');
+      const userWord = input.value.trim().toLowerCase();
+
+      if (userWord === appState.targetWord) {
+        handleWordSuccess();
+      } else {
+        handleWordError();
+      }
+    }
+
+    function checkBlanksWordComplete() {
+      let solved = true;
+      for (let idx of blanksMissingIndices) {
+        const char = appState.targetWord[idx];
+        if (!appState.guessedLetters.has(char)) {
+          solved = false;
+          break;
+        }
+      }
+
+      if (solved) handleWordSuccess();
+    }
+
+    function checkRocketWordComplete() {
+      let solved = true;
+      for (let char of appState.targetWord) {
+        if (!appState.guessedLetters.has(char)) {
+          solved = false;
+          break;
+        }
+      }
+
+      if (solved) {
+        assembleNextRocketPart();
+        handleWordSuccess();
+      }
+    }
+
+    function showFeedbackBanner(message, isSuccess) {
+      const banner = document.getElementById('feedback-banner');
+      banner.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'border-emerald-300', 'bg-red-100', 'text-red-800', 'border-red-300');
+      
+      if (isSuccess) {
+        banner.classList.add('bg-emerald-100', 'text-emerald-800', 'border-2', 'border-emerald-300');
+      } else {
+        banner.classList.add('bg-red-100', 'text-red-800', 'border-2', 'border-red-300');
+      }
+
+      banner.textContent = message;
+    }
+
+    function handleWordSuccess() {
+      playSound('correct');
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+
+      appState.score += 10;
+      appState.stars += 1;
+      appState.streak += 1;
+
+      if (appState.stars >= 1) unlockBadge('first_star');
+      if (appState.streak >= 5) unlockBadge('streak_5');
+      if (appState.stars >= 20) unlockBadge('spelling_bee');
+
+      updateHeaderStats();
+
+      // Check if rocket is fully assembled (5 stages completed)
+      if (appState.currentMode === 'rocket' && appState.rocketStage >= 5) {
+        triggerRocketLaunchSequence();
+        showFeedbackBanner(`🚀 ROCKET READY! BLAST OFF IN 3...2...1!`, true);
+        
+        setTimeout(() => {
+          finishGame();
+        }, 3800);
+        return;
+      }
+
+      showFeedbackBanner(`🎉 Excellent! You spelled "${appState.targetWord.toUpperCase()}"! (+1⭐)`, true);
+
+      setTimeout(() => {
+        appState.currentIndex++;
+        loadCurrentWord();
+      }, 1800);
+    }
+
+    function handleWordError() {
+      playSound('wrong');
+      appState.streak = 0;
+      updateHeaderStats();
+
+      showFeedbackBanner(`Nice try! The correct word is "${appState.targetWord.toUpperCase()}".`, false);
+
+      setTimeout(() => {
+        appState.currentIndex++;
+        loadCurrentWord();
+      }, 2500);
+    }
+
+    function finishGame() {
+      if (appState.currentMode === 'rocket') {
+        unlockBadge('rocket_master');
+      }
+
+      showScreen('summary');
+
+      const totalWords = appState.activeWords.length;
+      const correctWords = Math.round(appState.score / 10);
+      const accuracy = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 100;
+
+      document.getElementById('summary-correct').textContent = `${correctWords} / ${totalWords}`;
+      document.getElementById('summary-stars').textContent = `+${correctWords}⭐`;
+      document.getElementById('summary-accuracy').textContent = `${accuracy}%`;
+
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+    }
+
+
+    /* Boot Application */
+    window.onload = async function() {
+      await loadYearGroupData(appState.selectedYear);
+      renderBadges();
+    };
+  </script>
+</body>
+</html>
